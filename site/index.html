@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DealRadar Schweiz | Deals mit Preischeck</title><meta name="description" content="DealRadar Schweiz: unterhaltsame Shopping-Comedy und sorgfältig geprüfte Angebote.">
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,sans-serif}*{box-sizing:border-box}body{margin:0;background:#081722;color:#f4fff9}header,main,footer{max-width:900px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}a{color:#9effcf}.logo{font-weight:900;font-size:1.25rem;color:#7ff4bb}.hero{background:linear-gradient(135deg,#104535,#102944);padding:32px;border-radius:22px}h1{font-size:clamp(2rem,7vw,3.3rem);line-height:1.09;margin:0 0 16px}.lead{line-height:1.6;color:#d3e3df}.button{display:inline-block;background:#74ebac;color:#07201d;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.card{background:#142736;border:1px solid #31566a;border-radius:16px;padding:20px}.meta{color:#b5caca;font-size:.93rem}h2{margin-top:35px}footer{color:#a4bbb5;font-size:.9rem}small{line-height:1.5}#status{color:#bcd2c8}
+</style></head>
+<body><header><div class="logo">🛒 DealRadar Schweiz</div><a href="https://www.tiktok.com/@dy3ko4nveu0o" rel="noopener noreferrer">TikTok ↗</a></header>
+<main><section class="hero"><h1>Shopping ist manchmal absurd.<br>Gute Deals nicht.</h1><p class="lead">Lustige Shopping-Fails, ehrliche Preischecks und nur Angebote, die wir tatsächlich geprüft haben.</p><a class="button" href="https://www.tiktok.com/@dy3ko4nveu0o" rel="noopener noreferrer">Unsere Comedy-Videos ansehen</a></section>
+<h2>Aktuell geprüfte Angebote</h2><p id="status">Angebote werden geladen …</p><div class="grid" id="offers"></div>
+<h2>So prüfen wir Angebote</h2><div class="grid"><article class="card"><strong>Preis</strong><p>Preis, Währung und Verfügbarkeit werden zum angegebenen Prüfzeitpunkt kontrolliert.</p></article><article class="card"><strong>Gesamtkosten</strong><p>Versand und weitere bekannte Gebühren werden berücksichtigt, sofern verfügbar.</p></article><article class="card"><strong>Transparenz</strong><p>Werbliche Kooperationen und Affiliate-Links werden gekennzeichnet.</p></article></div>
+</main><footer><small>DealRadar ist ein unabhängiges Content-Projekt. Preise und Verfügbarkeit können sich ändern. Angebote sind keine Kaufempfehlung. Bei als Werbung oder Affiliate-Link gekennzeichneten Verweisen kann eine Provision entstehen.</small></footer>
+<script>
+(async()=>{const s=document.getElementById('status'),list=document.getElementById('offers');
+try{const res=await fetch('./deals.json',{cache:'no-store'});if(!res.ok)throw new Error('feed unavailable');const data=await res.json();const now=new Date();
+const offers=(data.offers||[]).filter(x=>x.status==='verified'&&x.verified_at&&x.url&&x.title&&x.price_chf!=null&&/^https:\/\//.test(x.url)&&(!x.valid_until||new Date(x.valid_until)>=now));
+if(!offers.length){s.textContent='Momentan keine verifizierten Deals. Wir zeigen lieber nichts als erfundene Rabatte.';return;}
+s.textContent=offers.length+' geprüfte Angebote – Preise können sich ändern.';
+offers.forEach(x=>{const e=document.createElement('article');e.className='card';const h=document.createElement('h3');h.textContent=x.title;const p=document.createElement('p');p.textContent='CHF '+Number(x.price_chf).toFixed(2)+(x.shipping_chf!=null?' + Versand CHF '+Number(x.shipping_chf).toFixed(2):'');const date=document.createElement('p');date.className='meta';date.textContent='Geprüft: '+new Date(x.verified_at).toLocaleString('de-CH')+(x.merchant?' · '+x.merchant:'');const a=document.createElement('a');a.href=x.url;a.rel='nofollow sponsored noopener noreferrer';a.target='_blank';a.textContent='Angebot ansehen'+(x.affiliate?' *':'');e.append(h,p,date,a);list.appendChild(e);});
+}catch(err){s.textContent='Derzeit keine Angebote verfügbar. Bitte später erneut prüfen.';}})();
+</script></body></html>
