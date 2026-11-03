@@ -1,0 +1,22 @@
+{
+  "produced": [
+    {
+      "id": "7f6836dab4de89b3faf9cd80",
+      "sha256": "e0eb2b2094e241ac18c913f097dd7f7af6ed6e8e0f77831156ade396a2d599f9",
+      "language": "en",
+      "title": "A cheap phone can cost more"
+    },
+    {
+      "id": "d154ceb7d31c5f493fb10473",
+      "sha256": "0b0c59d225b7dd4288dcc831c00edd8a8fb040c5ac652d16e77a6c38e090662a",
+      "language": "de",
+      "title": "Handy-Schnäppchen? Achtung!"
+    },
+    {
+      "id": "b577ede9e83e7711335873a6",
+      "sha256": "1a6055a40b93e5ee5fe1618fd815edd79028d2990ae7e3be7f5f75eaeea71ae8",
+      "language": "en",
+      "title": "The hidden cost of robot vacuums"
+    }
+  ]
+}
