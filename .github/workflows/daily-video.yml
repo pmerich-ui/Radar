@@ -52,8 +52,4 @@ jobs:
         run: |
           git config user.name "dealradar-video-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/produced.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record newly rendered original videos"
-            git push
-          fi
+          python -m src.save_ledger
