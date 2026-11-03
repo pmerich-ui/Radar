@@ -1,0 +1,59 @@
+name: DealRadar Daily Video Production
+on:
+  schedule:
+    - cron: '30 7 * * *'
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'New videos to render (1-5)'
+        required: false
+        default: '1'
+concurrency:
+  group: dealradar-video-production
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BATCH_SIZE: ${{ github.event.inputs.count || '1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install FFmpeg and fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install -r requirements.txt
+      - name: Verify generator and MP4 QA
+        run: python -m unittest discover -s tests -v
+      - name: Generate new videos
+        run: python -m src.batch
+      - name: Upload to Supabase if configured
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_VIDEO_BUCKET: dealradar-videos
+        run: python -m src.storage
+      - name: Upload private MP4 artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dealradar-videos-${{ github.run_id }}
+          path: output/
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Save anti-repeat ledger
+        if: success()
+        run: |
+          git config user.name "dealradar-video-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/produced.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record newly rendered original videos"
+            git push
+          fi
