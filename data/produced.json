@@ -17,6 +17,12 @@
       "sha256": "1a6055a40b93e5ee5fe1618fd815edd79028d2990ae7e3be7f5f75eaeea71ae8",
       "language": "en",
       "title": "The hidden cost of robot vacuums"
+    },
+    {
+      "id": "108a3522d14c8cfd8c0edaa2",
+      "sha256": "1191f250add3ad27024efb814b5193011cca7bcc904a3f37ba3b9f430b6000c0",
+      "language": "de",
+      "title": "Saugroboter: Der Preis ist nicht alles"
     }
   ]
 }
