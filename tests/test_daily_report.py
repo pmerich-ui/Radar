@@ -15,6 +15,10 @@ class DailyReportTests(unittest.TestCase):
         with patch.dict(os.environ, {}, clear=True):
             self.assertEqual(daily_report.main(), 0)
 
+    def test_required_telegram_missing_fails_loudly(self):
+        with patch.dict(os.environ, {"REQUIRE_TELEGRAM": "1"}, clear=True):
+            self.assertEqual(daily_report.main(), 2)
+
     def test_bad_tracker_response_fails_closed(self):
         with patch.dict(os.environ, {"CLICK_REPORT_URL": "https://example.com/report", "CLICK_REPORT_TOKEN": "test"}, clear=True):
             with patch.object(daily_report, "get_json", return_value={"unexpected": []}):
