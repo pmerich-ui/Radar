@@ -5,6 +5,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 W,H,FPS=720,1280,30
 CATALOG=[
+("de","Beauty-Gadget","Live-Demo","DAS SOLL WIRKLICH FUNKTIONIEREN?!","Vorher-Nachher kritisch prüfen|Echte Bewertungen vergleichen|Preis und Rückgabe checken"),
+("de","Küchen-Gadget","Problem-Lösung","ICH BRAUCHE DAS ... ODER DOCH NICHT?","Zeig zuerst das Alltagsproblem|Prüfe ob das Gadget hilft|Vergleiche den echten Endpreis"),
+("de","Unboxing","Erwartung-Realität","BESTELLT VS. GELIEFERT!","Produktbilder kritisch prüfen|Grösse und Material kontrollieren|Rücksendung vorher klären"),
+("de","Geschenk-Idee","Überraschung","DAS GESCHENK SIEHT TEUER AUS!","Nutzen statt Hype prüfen|Alternativen vergleichen|Budgetgrenze einhalten"),
 ("de","Preisvergleich","Rabatt-Falle","70 % RABATT?! Wirklich?","Alter Preis ist nicht Marktpreis|Vergleiche mehrere Shops|Prüfe den Endpreis"),
 ("de","Gratis Versand","Versand-Falle","GRATIS VERSAND ... ab 99 Franken?!","Mindestbestellwert beachten|Keine unnötigen Extras kaufen|Gesamtpreis vergleichen"),
 ("de","Black Friday","Kauf-Panik","BLACK FRIDAY: Kauf nicht blind!","Preisentwicklung prüfen|Wunschliste statt Impulskauf|Rückgaberegeln lesen"),
