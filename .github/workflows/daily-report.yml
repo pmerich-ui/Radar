@@ -28,6 +28,8 @@ jobs:
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Test report safety
+        run: python -m unittest discover -s tests -p 'test_daily_report.py' -v
       - name: Run report
         if: steps.clock.outputs.run == 'true'
         env:
