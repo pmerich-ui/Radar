@@ -21,10 +21,27 @@ def validate_price_payload(deal: dict, *, demo: bool = False) -> dict:
         raise ValueError("At least ten dated price observations required")
     if any(not isinstance(row,(list,tuple)) or len(row)!=2 for row in rows):
         raise ValueError("Invalid history row")
+    if len({str(row[0]) for row in rows}) != len(rows):
+        raise ValueError("Duplicate observation timestamps cannot inflate price history")
+    if not isinstance(deal.get("current_price"), (int, float)) or isinstance(deal.get("current_price"), bool) or deal["current_price"] <= 0:
+        raise ValueError("Current price must be positive")
     observations = [{"at":str(ts)+"T00:00:00+00:00" if len(str(ts))==10 else str(ts),"price_chf":price} for ts,price in rows]
     med = ninety_day_median(observations,datetime.now(timezone.utc))
     if med is None:
         raise ValueError("Insufficient valid observations in last 90 days")
+    from datetime import timedelta
+    valid_dates = []
+    now = datetime.now(timezone.utc)
+    for observation in observations:
+        try:
+            timestamp = datetime.fromisoformat(observation["at"].replace("Z", "+00:00"))
+            price = observation["price_chf"]
+            if timestamp.tzinfo is not None and now - timedelta(days=90) <= timestamp <= now and isinstance(price,(int,float)) and not isinstance(price,bool) and price > 0:
+                valid_dates.append(timestamp)
+        except (ValueError, TypeError, AttributeError):
+            continue
+    if len(valid_dates) < 10:
+        raise ValueError("Ten valid dated price observations required")
     return {"median_90d_chf":med,"observations":len(observations),"demo":True}
 
 def render_demo(deal_path: str, output_path: str) -> dict:
