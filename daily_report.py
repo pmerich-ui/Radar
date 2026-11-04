@@ -40,7 +40,7 @@ def main():
     chat=os.getenv("TELEGRAM_CHAT_ID","").strip()
     if not (bot and chat):
         print("Telegram nicht konfiguriert; Trockenlauf abgeschlossen.",file=sys.stderr)
-        return 0
+        return 2 if os.getenv("REQUIRE_TELEGRAM") == "1" else 0
     data=json.dumps({"chat_id":chat,"text":message,"disable_web_page_preview":True}).encode()
     request=urllib.request.Request("https://api.telegram.org/bot"+bot+"/sendMessage",data=data,headers={"Content-Type":"application/json"},method="POST")
     try:
