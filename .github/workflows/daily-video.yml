@@ -1,5 +1,11 @@
 name: DealRadar Daily Video Production
 on:
+  push:
+    paths:
+      - 'src/producer.py'
+      - 'src/visuals.py'
+      - 'tests/test_visuals.py'
+      - '.github/workflows/daily-video.yml'
   schedule:
     - cron: '30 7 * * *'
   workflow_dispatch:
