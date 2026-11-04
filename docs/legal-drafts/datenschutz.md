@@ -4,7 +4,7 @@ Stand: 4. November 2026
 
 ## 1. Verantwortliche Person
 DealRadar Schweiz ist ein privat betriebenes Online- und Social-Media-Projekt.
-Verantwortliche Person: **[VOLLSTÄNDIGER NAME EINTRAGEN]**
+Verantwortliche Person: **Erich Müller**
 Kontakt-E-Mail für Datenschutzanfragen: **pmerich9@gmail.com**
 Kontaktanschrift: **[ANSCHRIFT EINTRAGEN, SOWEIT ERFORDERLICH]**
 
