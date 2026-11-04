@@ -1,0 +1,38 @@
+name: DealRadar Tagesreport
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
+    - cron: '0 7 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: dealradar-daily-report
+  cancel-in-progress: false
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check 08:00 Switzerland or manual dispatch
+        id: clock
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ "$(TZ=Europe/Zurich date +%H)" = "08" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run report
+        if: steps.clock.outputs.run == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CLICK_REPORT_URL: ${{ secrets.CLICK_REPORT_URL }}
+          CLICK_REPORT_TOKEN: ${{ secrets.CLICK_REPORT_TOKEN }}
+        run: python daily_report.py
