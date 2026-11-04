@@ -55,35 +55,12 @@ def write(d,txt,x,y,width,size,color,bold=True):
         d.text((x,y),line,font=ft,fill=color);y+=int(size*1.32)
     return y
 def slide(item,i,seed,path):
-    lang,topic,angle,hook,facts=item
-    bg,accent=PALETTES[(seed+i)%len(PALETTES)]
-    im=Image.new("RGB",(W,H),bg);d=ImageDraw.Draw(im)
-    for k in range(9):
-        x=(seed//(k+1)+k*187+i*51)%W;y=(k*167+i*97)%H;r=35+(seed>>(k%11))%110
-        d.ellipse((x-r,y-r,x+r,y+r),outline=accent,width=2)
-    d.rounded_rectangle((38,45,682,132),radius=25,fill=accent)
-    d.text((58,70),"DEALRADAR SCHWEIZ",fill=bg,font=font(26))
-    if i==0:
-        d.rounded_rectangle((42,235,678,820),radius=45,outline=accent,width=8)
-        d.text((85,280),"SMART SHOPPING" if lang=="en" else "CLEVER KAUFEN",font=font(28),fill=accent)
-        write(d,hook,80,395,550,64,"#ffffff")
-        write(d,topic.upper(),80,750,550,30,accent)
-    elif i==1:
-        d.text((60,215),"3 QUICK CHECKS" if lang=="en" else "3 WICHTIGE CHECKS",font=font(45),fill=accent)
-        for j,fact in enumerate(facts.split("|")):
-            y=350+j*242
-            d.rounded_rectangle((44,y,675,y+208),radius=25,outline=accent,width=4)
-            d.ellipse((70,y+44,130,y+104),fill=accent)
-            d.text((88,y+60),str(j+1),font=font(28),fill=bg)
-            write(d,fact,158,y+37,465,33,"#ffffff",False)
-    else:
-        write(d,"CHECK BEFORE YOU BUY" if lang=="en" else "VOR DEM KAUF PRÜFEN",65,240,590,57,accent)
-        d.rounded_rectangle((45,465,675,865),radius=35,outline=accent,width=7)
-        write(d,facts.split("|")[(seed//37)%3],75,540,555,46,"#ffffff")
-        d.rounded_rectangle((48,990,675,1110),radius=22,fill=accent)
-        write(d,"Mehr Deals: DealRadar Schweiz",100,1025,530,26,bg)
-    d.text((58,1200),"DealRadar Schweiz • Werbung",font=font(20),fill=accent)
+    """Render an original illustrated shopping scene, not a text-only slide."""
+    from .visuals import frame
+    im=Image.new("RGB",(W,H))
+    frame(im,item,i,seed)
     im.save(path)
+
 def music(path,seconds,seed):
     rate=22050; notes=[110+seed%43,145+seed%31,180+seed%29,220+seed%37]
     with wave.open(str(path),"wb") as wf:
