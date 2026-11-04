@@ -5,6 +5,8 @@ on:
       - 'src/producer.py'
       - 'src/visuals.py'
       - 'tests/test_visuals.py'
+      - 'src/pipeline.py'
+      - 'tests/test_pipeline.py'
       - '.github/workflows/daily-video.yml'
   schedule:
     - cron: '30 7 * * *'
