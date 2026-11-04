@@ -5,6 +5,11 @@ from PIL import Image, ImageDraw, ImageFont
 
 W,H,FPS=720,1280,30
 CATALOG=[
+("de","Preisvergleich","Rabatt-Falle","70 % RABATT?! Wirklich?","Alter Preis ist nicht Marktpreis|Vergleiche mehrere Shops|Prüfe den Endpreis"),
+("de","Gratis Versand","Versand-Falle","GRATIS VERSAND ... ab 99 Franken?!","Mindestbestellwert beachten|Keine unnötigen Extras kaufen|Gesamtpreis vergleichen"),
+("de","Black Friday","Kauf-Panik","BLACK FRIDAY: Kauf nicht blind!","Preisentwicklung prüfen|Wunschliste statt Impulskauf|Rückgaberegeln lesen"),
+("de","Smartphone-Deal","Angebots-Check","HANDY 50 % BILLIGER? Moment!","Modell und Speicher vergleichen|Refurbished oder neu prüfen|Garantie und Versand beachten"),
+("de","Schein-Schnäppchen","Shopping-Comedy","ICH HABE 200 FRANKEN GESPART ...","Rabatt ist keine Ersparnis ohne Bedarf|Nicht vom Countdown treiben lassen|Preis mit Alternativen vergleichen"),
 ("en","Smartphone deals","total cost","A cheap phone can cost more","Compare checkout total|Check warranty terms|Read return conditions"),
 ("de","Smartphone-Angebote","Endpreis","Handy-Schnäppchen? Achtung!","Endpreis inklusive Versand prüfen|Garantiebedingungen lesen|Rücksendekosten vergleichen"),
 ("en","Robot vacuums","maintenance","The hidden cost of robot vacuums","Check replacement brushes|Compare filter costs|Verify parts availability"),
@@ -53,7 +58,7 @@ def slide(item,i,seed,path):
         x=(seed//(k+1)+k*187+i*51)%W;y=(k*167+i*97)%H;r=35+(seed>>(k%11))%110
         d.ellipse((x-r,y-r,x+r,y+r),outline=accent,width=2)
     d.rounded_rectangle((38,45,682,132),radius=25,fill=accent)
-    d.text((58,70),"DEALRADAR GLOBAL",fill=bg,font=font(31))
+    d.text((58,70),"DEALRADAR SCHWEIZ",fill=bg,font=font(26))
     if i==0:
         d.rounded_rectangle((42,235,678,820),radius=45,outline=accent,width=8)
         d.text((85,280),"SMART SHOPPING" if lang=="en" else "CLEVER KAUFEN",font=font(28),fill=accent)
@@ -72,8 +77,8 @@ def slide(item,i,seed,path):
         d.rounded_rectangle((45,465,675,865),radius=35,outline=accent,width=7)
         write(d,facts.split("|")[(seed//37)%3],75,540,555,46,"#ffffff")
         d.rounded_rectangle((48,990,675,1110),radius=22,fill=accent)
-        write(d,"DEALRADAR GLOBAL",100,1025,530,37,bg)
-    d.text((58,1200),"SHOP SMARTER • NO FALSE DEALS",font=font(23),fill=accent)
+        write(d,"Mehr Deals: DealRadar Schweiz",100,1025,530,26,bg)
+    d.text((58,1200),"DealRadar Schweiz • Werbung",font=font(20),fill=accent)
     im.save(path)
 def music(path,seconds,seed):
     rate=22050; notes=[110+seed%43,145+seed%31,180+seed%29,220+seed%37]
