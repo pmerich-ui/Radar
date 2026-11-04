@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Run revenue and reporting unit tests
-        run: python -m unittest tests.test_revenue_quality tests.test_daily_report -v
+        run: python -m unittest discover -s tests -p 'test_revenue_quality.py' -v
+          python -m unittest discover -s tests -p 'test_daily_report.py' -v
       - name: Check Python syntax
         run: python -m compileall -q src/revenue_quality.py daily_report.py
