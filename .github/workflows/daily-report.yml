@@ -33,6 +33,7 @@ jobs:
       - name: Run report
         if: steps.clock.outputs.run == 'true'
         env:
+          REQUIRE_TELEGRAM: '1'
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CLICK_REPORT_URL: ${{ secrets.CLICK_REPORT_URL }}
