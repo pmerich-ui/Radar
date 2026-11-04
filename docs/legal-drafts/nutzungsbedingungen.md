@@ -6,7 +6,7 @@ Stand: 4. November 2026
 DealRadar Schweiz ist ein privat betriebenes Online- und Social-Media-Projekt.
 Verantwortliche Person: **Erich Müller**
 Kontakt: **pmerich9@gmail.com**
-Zustelladresse: **[GESCHÄFTLICHE/KONTAKTANSCHRIFT EINTRAGEN, SOWEIT ERFORDERLICH]**
+Zustelladresse: **Zumhofweg 3, 6010 Kriens, Schweiz**
 
 ## 2. Gegenstand
 DealRadar Schweiz veröffentlicht eigene Unterhaltungsinhalte, insbesondere Shopping-Comedy-Videos, sowie Informationen über Preise, Produkte und Angebote. Ein Anspruch auf bestimmte Inhalte, Veröffentlichungsintervalle oder die Verfügbarkeit eines Angebots besteht nicht.
