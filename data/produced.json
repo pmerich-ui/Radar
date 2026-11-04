@@ -29,6 +29,12 @@
       "sha256": "2980dbfcaa270a6fa1f91f3380ab6e55f17e5671ffc263d59d81ac2f18179158",
       "language": "en",
       "title": "Before buying a laptop"
+    },
+    {
+      "id": "5b8bf1c7f7cac0e86d8bcff2",
+      "sha256": "264b539bd5cec2420718b874d672d215b97db96e370438a2f2ee70b7eb4857c4",
+      "language": "de",
+      "title": "DAS SOLL WIRKLICH FUNKTIONIEREN?!"
     }
   ]
 }
