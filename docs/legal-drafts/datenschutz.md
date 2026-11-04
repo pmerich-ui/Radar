@@ -6,7 +6,7 @@ Stand: 4. November 2026
 DealRadar Schweiz ist ein privat betriebenes Online- und Social-Media-Projekt.
 Verantwortliche Person: **Erich Müller**
 Kontakt-E-Mail für Datenschutzanfragen: **pmerich9@gmail.com**
-Kontaktanschrift: **[ANSCHRIFT EINTRAGEN, SOWEIT ERFORDERLICH]**
+Kontaktanschrift: **Zumhofweg 3, 6010 Kriens, Schweiz**
 
 ## 2. Geltungsbereich
 Diese Erklärung beschreibt die Bearbeitung personenbezogener Daten im Zusammenhang mit der DealRadar-Webseite, Kontaktanfragen, Social-Media-Auftritten und – soweit tatsächlich aktiviert – der technischen Anbindung des TikTok-Kontos über die offizielle TikTok Content Posting API.
