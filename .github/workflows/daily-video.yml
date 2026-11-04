@@ -7,6 +7,8 @@ on:
       - 'tests/test_visuals.py'
       - 'src/pipeline.py'
       - 'tests/test_pipeline.py'
+      - 'src/integrations.py'
+      - 'tests/test_integrations.py'
       - '.github/workflows/daily-video.yml'
   schedule:
     - cron: '30 7 * * *'
