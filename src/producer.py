@@ -3,7 +3,7 @@ import hashlib, json, math, os, sqlite3, subprocess, tempfile, wave
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-W,H,FPS=720,1280,30
+W,H,FPS=1080,1920,30
 CATALOG=[
 ("de","Beauty-Gadget","Live-Demo","DAS SOLL WIRKLICH FUNKTIONIEREN?!","Vorher-Nachher kritisch prüfen|Echte Bewertungen vergleichen|Preis und Rückgabe checken"),
 ("de","Küchen-Gadget","Problem-Lösung","ICH BRAUCHE DAS ... ODER DOCH NICHT?","Zeig zuerst das Alltagsproblem|Prüfe ob das Gadget hilft|Vergleiche den echten Endpreis"),
@@ -75,20 +75,20 @@ def validate(p):
     data=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration:stream=codec_name,codec_type,width,height,r_frame_rate,pix_fmt","-of","json",str(p)],text=True))
     v=next(x for x in data["streams"] if x.get("codec_type")=="video")
     duration=float(data["format"]["duration"]);n,d=map(int,v["r_frame_rate"].split("/"))
-    if (v["width"],v["height"])!=(720,1280) or v["codec_name"]!="h264" or v["pix_fmt"]!="yuv420p" or not 23<=n/d<=60 or not 9<=duration<=20:raise ValueError("Video QA failed")
+    if (v["width"],v["height"])!=(1080,1920) or v["codec_name"]!="h264" or v["pix_fmt"]!="yuv420p" or not 23<=n/d<=60 or not 15<=duration<=30:raise ValueError("Video QA failed")
     digest=hashlib.sha256(p.read_bytes()).hexdigest()
-    return {"fps":n/d,"duration":duration,"width":720,"height":1280,"sha256":digest}
+    return {"fps":n/d,"duration":duration,"width":1080,"height":1920,"sha256":digest}
 def render(item,path):
     key="|".join(item);seed=int(hashlib.sha256(key.encode()).hexdigest()[:8],16)
     with tempfile.TemporaryDirectory() as folder:
         t=Path(folder);images=[t/f"{i}.png" for i in range(3)]
         for i,img in enumerate(images):slide(item,i,seed,img)
-        audio=t/"original.wav";music(audio,12,seed)
+        audio=t/"original.wav";music(audio,18,seed)
         cmd=["ffmpeg","-hide_banner","-loglevel","error","-y"]
-        for p in images:cmd+=["-loop","1","-framerate","30","-t","4","-i",str(p)]
+        for p in images:cmd+=["-loop","1","-framerate","30","-t","6","-i",str(p)]
         cmd+=["-i",str(audio)]
-        f=";".join([f"[{i}:v]zoompan=z='min(zoom+0.0003,1.05)':d=120:s=720x1280:fps=30,trim=duration=4,setpts=PTS-STARTPTS[v{i}]" for i in range(3)]+["[v0][v1][v2]concat=n=3:v=1:a=0,format=yuv420p[v]"])
-        cmd+=["-filter_complex",f,"-map","[v]","-map","3:a:0","-t","12","-c:v","libx264","-preset","ultrafast","-crf","26","-r","30","-pix_fmt","yuv420p","-c:a","aac","-b:a","96k","-movflags","+faststart",str(path)]
+        f=";".join([f"[{i}:v]zoompan=z='min(zoom+0.0003,1.05)':d=180:s=1080x1920:fps=30,trim=duration=6,setpts=PTS-STARTPTS[v{i}]" for i in range(3)]+["[v0][v1][v2]concat=n=3:v=1:a=0,format=yuv420p[v]"])
+        cmd+=["-filter_complex",f,"-map","[v]","-map","3:a:0","-t","18","-c:v","libx264","-preset","ultrafast","-crf","26","-r","30","-pix_fmt","yuv420p","-c:a","aac","-b:a","96k","-movflags","+faststart",str(path)]
         subprocess.run(cmd,check=True,timeout=180)
     return validate(path)
 def produce(root:Path):
