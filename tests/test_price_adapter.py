@@ -14,7 +14,7 @@ class PriceAdapterTests(unittest.TestCase):
     def test_valid_demo(self):
         now=datetime.now(timezone.utc)
         history=[[(now-timedelta(days=i)).date().isoformat(),100+i] for i in range(10)]
-        result=validate_price_payload({"id":"demo-x","currency":"CHF","history":history},demo=True)
+        result=validate_price_payload({"id":"demo-x","currency":"CHF","current_price":90,"history":history},demo=True)
         self.assertEqual(result["median_90d_chf"],104.5)
 
     def test_duplicate_dates_rejected(self):
