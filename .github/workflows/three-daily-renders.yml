@@ -45,6 +45,9 @@ jobs:
         env:
           BATCH_SIZE: '1'
         run: python -m src.batch
+      - name: Audit premium readiness (report only; never auto-publish)
+        if: steps.gate.outputs.enabled == 'true'
+        run: python -m src.readiness_audit
       - name: Store private render artifact
         if: steps.gate.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
