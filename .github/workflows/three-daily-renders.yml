@@ -40,6 +40,19 @@ jobs:
       - name: Run tests
         if: steps.gate.outputs.enabled == 'true'
         run: python -m unittest discover -s tests -v
+      - name: Assert growth dry-run gate
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          MODE: GROWTH
+          DRY_RUN: 'true'
+          PUBLISHING_ENABLED: 'false'
+        run: |
+          python - <<'PY'
+          from src.publication_gate import publication_decision
+          decision = publication_decision(qa_passed=True, rights_verified=True, factual_claims_verified=True, platform_tested=True, explicit_approval=True)
+          print(decision)
+          assert not decision['allowed'], 'Unsafe publication gate'
+          PY
       - name: Render one video
         if: steps.gate.outputs.enabled == 'true'
         env:
