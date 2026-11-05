@@ -10,8 +10,6 @@ on:
       - 'src/integrations.py'
       - 'tests/test_integrations.py'
       - '.github/workflows/daily-video.yml'
-  schedule:
-    # Scheduled drafts paused pending audio and visual QA
   workflow_dispatch:
     inputs:
       count:
