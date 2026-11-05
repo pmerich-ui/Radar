@@ -1,1 +1,11 @@
-<!doctype html><html lang="de"><meta charset="utf-8"><title>DealRadar Schweiz</title><h1>DealRadar Schweiz</h1><p><a href="nutzungsbedingungen.html">Nutzungsbedingungen</a></p><p><a href="datenschutz.html">Datenschutz</a></p></html>
+<!doctype html><html lang="de-CH"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DealRadar Schweiz</title><h1>DealRadar Schweiz</h1><p>Shopping-Tipps und Videos. Aktuell keine verifizierten Affiliate-Angebote.</p><p><a id="tiktok" href="https://www.tiktok.com/@dy3ko4nveu0o" rel="noopener noreferrer">TikTok-Kanal besuchen</a></p><p><a href="nutzungsbedingungen.html">Nutzungsbedingungen</a> · <a href="datenschutz.html">Datenschutz</a></p><script>
+document.getElementById('tiktok').addEventListener('click',function(){
+  try {
+    const p=new URLSearchParams(location.search);
+    const v=s=>String(s||'').slice(0,64);
+    const event={type:'outbound_click',target:'tiktok',source:v(p.get('utm_source')),campaign:v(p.get('utm_campaign')),video_id:v(p.get('video_id'))};
+    const payload=new Blob([JSON.stringify(event)],{type:'application/json'});
+    if(navigator.sendBeacon) navigator.sendBeacon('https://emller--cccf208ad94111f1958c1607ee4eb77e.web.val.run/events',payload);
+  } catch(e) {}
+});
+</script></html>
