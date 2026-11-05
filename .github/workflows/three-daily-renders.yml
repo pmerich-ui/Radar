@@ -40,6 +40,9 @@ jobs:
       - name: Run tests
         if: steps.gate.outputs.enabled == 'true'
         run: python -m unittest discover -s tests -v
+      - name: Inspect dual-channel publishing readiness (report only)
+        if: steps.gate.outputs.enabled == 'true'
+        run: python -m src.autopublish_readiness
       - name: Assert growth dry-run gate
         if: steps.gate.outputs.enabled == 'true'
         env:
