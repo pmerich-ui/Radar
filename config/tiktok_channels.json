@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "channels": [
+    {
+      "handle": "dy3ko4nveu0o",
+      "role": "existing_metricool_channel",
+      "metricool_brand_id": 7820933,
+      "connected_via_metricool": true
+    },
+    {
+      "handle": "erco227",
+      "role": "secondary_organic_channel",
+      "followers_observed": 919,
+      "followers_observed_at": "2026-11-05",
+      "connected_via_metricool": false,
+      "api_authorized": false
+    }
+  ],
+  "publication": {
+    "enabled": false,
+    "approval_required": true
+  },
+  "tracking": {
+    "per_channel_utm_source": true
+  }
+}
