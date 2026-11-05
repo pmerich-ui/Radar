@@ -9,7 +9,7 @@
     },
     {
       "handle": "erco227",
-      "role": "secondary_organic_channel",
+      "role": "priority_channel_pending_authorization",
       "followers_observed": 919,
       "followers_observed_at": "2026-11-05",
       "connected_via_metricool": false,
@@ -18,9 +18,35 @@
   ],
   "publication": {
     "enabled": false,
-    "approval_required": true
+    "approval_required": true,
+    "reason": "No verified TikTok publishing authorization for erco227; do not publish automatically"
   },
   "tracking": {
-    "per_channel_utm_source": true
+    "per_channel_utm_source": true,
+    "clicks_are_not_revenue": true
+  },
+  "schedule": {
+    "timezone": "Europe/Zurich",
+    "same_video_two_channels": true,
+    "posts_per_channel_per_day": 3,
+    "channels": [
+      {
+        "handle": "erco227",
+        "local_times": [
+          "08:00",
+          "13:00",
+          "19:00"
+        ]
+      },
+      {
+        "handle": "dy3ko4nveu0o",
+        "local_times": [
+          "10:00",
+          "15:00",
+          "21:00"
+        ]
+      }
+    ],
+    "status": "planned_not_active"
   }
 }
