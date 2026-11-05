@@ -8,7 +8,8 @@ import argparse, datetime as dt, json, os, sys, urllib.request
 from zoneinfo import ZoneInfo
 
 API = "https://api.buffer.com"
-CHANNELS_QUERY = """query DealRadarChannels { account { organizations { id channels { id name service } } } }"""
+CHANNELS_QUERY = """query DealRadarOrganizations { account { organizations { id name } } }"""
+CHANNELS_FOR_ORG = """query DealRadarChannels($organizationId: String!) { channels(input: {organizationId: $organizationId}) { id name displayName service isQueuePaused } }"""
 MUTATION = """mutation DealRadarSchedule($input: CreatePostInput!) { createPost(input: $input) { ... on PostActionSuccess { post { id dueAt status } } ... on MutationError { message } } }"""
 
 def call(query: str, variables: dict | None = None) -> dict:
@@ -55,7 +56,13 @@ def main() -> None:
     p.add_argument("--caption")
     a = p.parse_args()
     if a.discover or not a.publish:
-        print(json.dumps(call(CHANNELS_QUERY), ensure_ascii=False, indent=2))
+        orgs = call(CHANNELS_QUERY).get("account", {}).get("organizations", [])
+        result = []
+        for org in orgs:
+            # Buffer channel lookup requires an organization ID.
+            q = """query { channels(input: { organizationId: %s }) { id name displayName service isQueuePaused } }""" % json.dumps(org["id"])
+            result.append({"organization": org, "channels": call(q).get("channels", [])})
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return
     if not all((a.channel_id, a.date, a.time, a.video_url, a.caption)):
         p.error("Publishing requires --channel-id --date --time --video-url --caption")
