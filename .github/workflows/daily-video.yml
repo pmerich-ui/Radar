@@ -10,6 +10,9 @@ on:
       - 'src/integrations.py'
       - 'src/publication_gate.py'
       - 'tests/test_publication_gate.py'
+      - 'src/click_receiver.py'
+      - 'tests/test_click_receiver.py'
+      - 'src/readiness_audit.py'
       - 'tests/test_integrations.py'
       - '.github/workflows/daily-video.yml'
   workflow_dispatch:
