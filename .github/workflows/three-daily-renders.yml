@@ -1,0 +1,60 @@
+name: DealRadar Three Daily Renders
+on:
+  schedule:
+    - cron: '0 7,8,12,13,18,19 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: dealradar-daily-renders
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check Switzerland schedule
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import datetime, os
+          from zoneinfo import ZoneInfo
+          now = datetime.datetime.now(ZoneInfo('Europe/Zurich'))
+          enabled = os.environ['EVENT_NAME'] == 'workflow_dispatch' or (now.hour in (8,13,19) and now.minute < 45)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('enabled=' + str(enabled).lower() + '\n')
+          print(now.isoformat(), enabled)
+          PY
+      - name: Install tools
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install -r requirements.txt
+      - name: Run tests
+        if: steps.gate.outputs.enabled == 'true'
+        run: python -m unittest discover -s tests -v
+      - name: Render one video
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          BATCH_SIZE: '1'
+        run: python -m src.batch
+      - name: Store private render artifact
+        if: steps.gate.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dealradar-render-${{ github.run_id }}
+          path: output/
+          retention-days: 7
+      - name: Save deduplication ledger
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          git config user.name 'dealradar-video-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python -m src.save_ledger
