@@ -8,6 +8,8 @@ on:
       - 'src/pipeline.py'
       - 'tests/test_pipeline.py'
       - 'src/integrations.py'
+      - 'src/publication_gate.py'
+      - 'tests/test_publication_gate.py'
       - 'tests/test_integrations.py'
       - '.github/workflows/daily-video.yml'
   workflow_dispatch:
@@ -27,6 +29,9 @@ jobs:
     timeout-minutes: 30
     env:
       BATCH_SIZE: ${{ github.event.inputs.count || '1' }}
+      MODE: GROWTH
+      DRY_RUN: 'true'
+      PUBLISHING_ENABLED: 'false'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,6 +44,14 @@ jobs:
           pip install -r requirements.txt
       - name: Verify generator and MP4 QA
         run: python -m unittest discover -s tests -v
+      - name: Assert publication remains blocked
+        run: |
+          python - <<'PY'
+          from src.publication_gate import publication_decision
+          decision = publication_decision(qa_passed=True, rights_verified=True, factual_claims_verified=True, platform_tested=True, explicit_approval=True)
+          print(decision)
+          assert not decision['allowed'], 'Unsafe publication gate'
+          PY
       - name: Generate new videos
         run: python -m src.batch
       - name: Upload to Supabase if configured
