@@ -5,7 +5,9 @@
       "handle": "dy3ko4nveu0o",
       "role": "existing_metricool_channel",
       "metricool_brand_id": 7820933,
-      "connected_via_metricool": true
+      "connected_via_metricool": true,
+      "publishing_provider": "metricool",
+      "provider_verified_readonly": true
     },
     {
       "handle": "erco227",
@@ -13,13 +15,16 @@
       "followers_observed": 919,
       "followers_observed_at": "2026-11-05",
       "connected_via_metricool": false,
-      "api_authorized": false
+      "api_authorized": false,
+      "publishing_provider": "metricool_pending_account_connection",
+      "buffer_api_required": false
     }
   ],
   "publication": {
     "enabled": false,
     "approval_required": true,
-    "reason": "No verified TikTok publishing authorization for erco227; do not publish automatically"
+    "reason": "Metricool connected and verified for dy3ko4nveu0o; erco227 must first be connected to Metricool; media delivery and end-to-end publication remain unverified",
+    "provider": "metricool"
   },
   "tracking": {
     "per_channel_utm_source": true,
@@ -47,6 +52,6 @@
         ]
       }
     ],
-    "status": "planned_not_active"
+    "status": "blocked_pending_second_channel_and_media_delivery"
   }
 }
