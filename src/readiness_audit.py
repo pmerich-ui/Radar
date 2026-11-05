@@ -22,9 +22,12 @@ def inspect_video(path: Path) -> dict:
             "duration_15_to_30": 15 <= duration <= 30,
             "video_h264": video.get("codec_name") == "h264",
             "audio_aac": audio,
+            "nonempty_file": path.stat().st_size > 10000,
         }
+        decode = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path), "-map", "0:v:0", "-f", "null", "-"], capture_output=True, text=True, timeout=180)
+        checks["full_decode"] = decode.returncode == 0
         return {"file": str(path), "checks": checks, "technical_premium_pass": all(checks.values())}
-    except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError) as exc:
+    except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError, subprocess.TimeoutExpired) as exc:
         return {"file": str(path), "technical_premium_pass": False, "error": type(exc).__name__}
 
 def audit(folder: Path = Path("output")) -> dict:
