@@ -34,6 +34,9 @@ jobs:
       - name: Fetch and audit approved Awin feed
         if: steps.awin_preflight.outputs.ready == 'true'
         run: python -m src.awin_feed_fetch --out reports/awin_feed_status.json
+      - name: COO discover deal candidates and Agent 14 draft briefs (redacted summary)
+        if: steps.awin_preflight.outputs.ready == 'true'
+        run: python -m src.coo_deal_pipeline
       - name: Explain blocked Awin import
         if: steps.awin_preflight.outputs.ready != 'true'
         run: echo 'Agent 05 blocked. See the workflow summary for the missing or invalid Awin secret.'
@@ -45,5 +48,6 @@ jobs:
           path: |
             reports/awin_feed_status.json
             reports/awin_preflight.json
+            reports/coo_deal_pipeline.json
           if-no-files-found: ignore
           retention-days: 7
