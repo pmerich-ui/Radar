@@ -96,7 +96,10 @@ def produce(root:Path):
     con=sqlite3.connect(root/"state.sqlite")
     con.execute("CREATE TABLE IF NOT EXISTS jobs(uid TEXT PRIMARY KEY,media_hash TEXT UNIQUE,status TEXT NOT NULL)")
     try:
-        for item in CATALOG:
+        # Stable daily rotation across fresh GitHub runners; catalog repeats after its length.
+        day_index = int(os.environ.get("DEALRADAR_DAY_INDEX", __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y%m%d")))
+        items = CATALOG[day_index % len(CATALOG):] + CATALOG[:day_index % len(CATALOG)]
+        for item in items:
             uid=hashlib.sha256("|".join(item).encode()).hexdigest()[:24]
             if con.execute("SELECT 1 FROM jobs WHERE uid=?",(uid,)).fetchone():continue
             con.execute("INSERT INTO jobs(uid,status) VALUES(?,'RENDERING')",(uid,));con.commit()
