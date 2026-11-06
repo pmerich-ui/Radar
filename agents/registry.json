@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "roles": [
+    {
+      "id": "01",
+      "name": "Geschäftsführer (Orchestrator)",
+      "slug": "geschaftsfuhrer-orchestrator",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "02",
+      "name": "Projektleiter",
+      "slug": "projektleiter",
+      "executor": "project_status",
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "03",
+      "name": "Strategie",
+      "slug": "strategie",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "04",
+      "name": "Eigentümer-Schnittstelle",
+      "slug": "eigentumer-schnittstelle",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "05",
+      "name": "Feed-Import",
+      "slug": "feed-import",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "06",
+      "name": "Datenqualität",
+      "slug": "datenqualitat",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "07",
+      "name": "Händler-Onboarding",
+      "slug": "handler-onboarding",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "08",
+      "name": "Schweiz-Prüfer",
+      "slug": "schweiz-prufer",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "09",
+      "name": "Preisbeobachter",
+      "slug": "preisbeobachter",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "10",
+      "name": "Deal-Analyst",
+      "slug": "deal-analyst",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "11",
+      "name": "Preisfehler-Detektor",
+      "slug": "preisfehler-detektor",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "12",
+      "name": "Trend-Scout",
+      "slug": "trend-scout",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "13",
+      "name": "Produktauswahl",
+      "slug": "produktauswahl",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "14",
+      "name": "Content-Stratege",
+      "slug": "content-stratege",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "15",
+      "name": "Hook-Spezialist",
+      "slug": "hook-spezialist",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "16",
+      "name": "Skript-Autor",
+      "slug": "skript-autor",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "17",
+      "name": "Bild- und Rechte-Agent",
+      "slug": "bild-und-rechte-agent",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "18",
+      "name": "Video-Editor",
+      "slug": "video-editor",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "19",
+      "name": "Audio-Agent",
+      "slug": "audio-agent",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "20",
+      "name": "Untertitel und Sprache",
+      "slug": "untertitel-und-sprache",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "21",
+      "name": "Video-QA",
+      "slug": "video-qa",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "22",
+      "name": "Faktenprüfer",
+      "slug": "faktenprufer",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "23",
+      "name": "Red-Team/Kritiker",
+      "slug": "red-team-kritiker",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "24",
+      "name": "Publisher",
+      "slug": "publisher",
+      "executor": null,
+      "autonomy": "L0_PUBLISH_GATED"
+    },
+    {
+      "id": "25",
+      "name": "Plattform-Compliance",
+      "slug": "plattform-compliance",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "26",
+      "name": "Community-Manager",
+      "slug": "community-manager",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "27",
+      "name": "Kanalausbau",
+      "slug": "kanalausbau",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "28",
+      "name": "Analytics",
+      "slug": "analytics",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "29",
+      "name": "Tracking-Ingenieur",
+      "slug": "tracking-ingenieur",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "30",
+      "name": "Experiment-Manager",
+      "slug": "experiment-manager",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "31",
+      "name": "Optimierer",
+      "slug": "optimierer",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "32",
+      "name": "Provisions-Abgleich",
+      "slug": "provisions-abgleich",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "33",
+      "name": "Website-Entwickler",
+      "slug": "website-entwickler",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "34",
+      "name": "SEO und Inhalte",
+      "slug": "seo-und-inhalte",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "35",
+      "name": "Recht und Compliance",
+      "slug": "recht-und-compliance",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "36",
+      "name": "Finanz-Controller",
+      "slug": "finanz-controller",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "37",
+      "name": "DevOps und Sicherheit",
+      "slug": "devops-und-sicherheit",
+      "executor": "devops_health",
+      "autonomy": "L0_READ_ONLY"
+    },
+    {
+      "id": "38",
+      "name": "Wissensverwalter",
+      "slug": "wissensverwalter",
+      "executor": null,
+      "autonomy": "L0_READ_ONLY"
+    }
+  ],
+  "rules": {
+    "mode": "GROWTH",
+    "dry_run": true,
+    "publishing_enabled": false,
+    "model_calls_enabled": false,
+    "extra_costs_chf": 0
+  }
+}
