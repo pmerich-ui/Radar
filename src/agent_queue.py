@@ -56,7 +56,7 @@ def execute(item):
             result = audit_feed(feed_path, root=ROOT)
         except ValueError:
             return "BLOCKED", "AWIN_FEED_PATH_INVALID"
-        return result["status"], result["reason"]
+        return result
     if agent == "02":
         registry = ROOT / "agents" / "registry.json"
         if not registry.exists():
@@ -83,6 +83,7 @@ def process(limit=20):
     pending = sorted((QUEUE / "pending").glob("*.json")) if (QUEUE / "pending").exists() else []
     processed = []
     for path in pending[:limit]:
+        execution = None
         item = json.loads(path.read_text(encoding="utf-8"))
         if item.get("task_id") != path.stem or item.get("agent_id") not in ALLOWED:
             raise ValueError("Invalid queue item: " + path.name)
@@ -99,11 +100,20 @@ def process(limit=20):
         if any(json.loads(p.read_text(encoding="utf-8")).get("status") != "COMPLETED" for p in receipts):
             status, reason = "BLOCKED", "DEPENDENCY_NOT_COMPLETED"
         else:
-            status, reason = execute(item)
+            execution = execute(item)
+            if isinstance(execution, dict):
+                status, reason = execution["status"], execution["reason"]
+            else:
+                status, reason = execution
         output = {"task_id": item["task_id"], "agent_id": item["agent_id"],
                   "timestamp_utc": utc_now(), "status": status, "reason": reason,
                   "evidence_level": "E0", "source": "local deterministic queue worker",
                   "published": False, "external_mutation": False}
+        if "execution" in locals() and isinstance(execution, dict) and item["agent_id"] == "05" and status == "COMPLETED":
+            output["source"] = execution["source"]
+            output["source_sha256"] = execution["source_sha256"]
+            output["evidence_level"] = execution["evidence_level"]
+            output["audit"] = execution["audit"]
         safe_json_write(receipt, output)
         path.unlink()
         processed.append(output)
