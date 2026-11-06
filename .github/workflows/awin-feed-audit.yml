@@ -31,9 +31,6 @@ jobs:
       - name: Check Awin credential configuration
         id: awin_preflight
         run: python -m src.awin_preflight
-      - name: Fetch and audit approved Awin feed
-        if: steps.awin_preflight.outputs.ready == 'true'
-        run: python -m src.awin_feed_fetch --out reports/awin_feed_status.json
       - name: COO discover deal candidates and Agent 14 draft briefs (redacted summary)
         if: steps.awin_preflight.outputs.ready == 'true'
         run: python -m src.coo_deal_pipeline
