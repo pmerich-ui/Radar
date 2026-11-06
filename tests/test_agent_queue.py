@@ -79,10 +79,13 @@ class TestQueue(unittest.TestCase):
     def test_blocked_dependency_stops_followup(self):
         agent_queue.enqueue("22", "fact-check", "No evidence")
         agent_queue.enqueue("24", "post-later", "No posting", ["fact-check"])
-        agent_queue.process()
-        result = agent_queue.process()
-        self.assertEqual(result[0]["status"], "BLOCKED")
-        self.assertEqual(result[0]["reason"], "DEPENDENCY_NOT_COMPLETED")
+        first = agent_queue.process()
+        second = agent_queue.process()
+        result = first + second
+        blocked = [r for r in result if r["task_id"] == "post-later"]
+        self.assertEqual(len(blocked), 1)
+        self.assertEqual(blocked[0]["status"], "BLOCKED")
+        self.assertEqual(blocked[0]["reason"], "DEPENDENCY_NOT_COMPLETED")
 
     def test_rejects_self_dependency(self):
         with self.assertRaises(ValueError):
