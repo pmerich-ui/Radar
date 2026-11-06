@@ -44,6 +44,19 @@ def execute(item):
     # Definition != executor. Never pretend this is an LLM or a publisher.
     if agent not in ALLOWED:
         return "BLOCKED", "UNKNOWN_AGENT"
+    if agent == "05":
+        from .agent05_feed import run as audit_feed
+        # A task may name only a repository-local preapproved feed path.
+        # Never parse arbitrary prose as a URL or network instruction.
+        description = item.get("description", "")
+        if not description.startswith("AUDIT_FEED:"):
+            return "BLOCKED", "AWIN_FEED_PATH_REQUIRED"
+        feed_path = description.removeprefix("AUDIT_FEED:").strip()
+        try:
+            result = audit_feed(feed_path, root=ROOT)
+        except ValueError:
+            return "BLOCKED", "AWIN_FEED_PATH_INVALID"
+        return result["status"], result["reason"]
     if agent == "02":
         registry = ROOT / "agents" / "registry.json"
         if not registry.exists():
