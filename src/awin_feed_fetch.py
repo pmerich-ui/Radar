@@ -35,7 +35,7 @@ def validate_url(url):
         raise ValueError("AWIN_FEED_URL_INVALID") from None
     return url
 
-def download_and_audit(url, *, root=None):
+def download_and_audit(url, *, root=None, candidate_callback=None):
     url = validate_url(url)
     root = Path(root) if root else Path(__file__).resolve().parents[1]
     target = root / "data" / "awin" / "incoming" / "scheduled.csv.gz"
@@ -71,7 +71,10 @@ def download_and_audit(url, *, root=None):
                 if expanded > MAX_UNCOMPRESSED:
                     raise ValueError("AWIN_UNCOMPRESSED_TOO_LARGE")
         tmp.replace(target)
-        return audit_feed("data/awin/incoming/scheduled.csv.gz", root=root)
+        result = audit_feed("data/awin/incoming/scheduled.csv.gz", root=root)
+        if candidate_callback is not None and result.get("status") == "COMPLETED":
+            candidate_callback(root)
+        return result
     finally:
         if tmp is not None:
             tmp.unlink(missing_ok=True)
