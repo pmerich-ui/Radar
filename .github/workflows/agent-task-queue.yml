@@ -51,7 +51,7 @@ jobs:
         run: |
           git config user.name 'dealradar-agent-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add queue/pending queue/results
+          git add -A queue/pending queue/results
           if ! git diff --cached --quiet; then
             git commit -m 'Record DealRadar task queue receipts'
             git push
