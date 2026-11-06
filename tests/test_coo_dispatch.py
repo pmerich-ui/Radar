@@ -11,9 +11,9 @@ class TestCooDispatch(unittest.TestCase):
             root = Path(temp)
             first = dispatch(root, "20261106")
             second = dispatch(root, "20261106")
-            self.assertEqual(len(first["created"]), 3)
+            self.assertEqual(len(first["created"]), 5)
             self.assertEqual(len(second["created"]), 0)
-            self.assertEqual(len(second["existing"]), 3)
+            self.assertEqual(len(second["existing"]), 5)
             for name in first["created"]:
                 data = json.loads((root / "queue/pending" / (name + ".json")).read_text())
                 self.assertEqual(data["origin"], "COO_DAILY_DISPATCH")
