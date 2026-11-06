@@ -1,0 +1,46 @@
+name: DealRadar Daily Video Draft and Independent QA
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '11 6 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: dealradar-daily-video
+  cancel-in-progress: false
+jobs:
+  produce-and-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      DRY_RUN: 'true'
+      PUBLISHING_ENABLED: 'false'
+      MODE: GROWTH
+      VIDEO_OUTPUT_DIR: output/daily
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline rendering dependency
+        run: python -m pip install Pillow==11.3.0
+      - name: Verify ffmpeg and ffprobe availability
+        run: |
+          ffmpeg -version
+          ffprobe -version
+      - name: Run offline marketing and QA tests
+        run: python -m unittest discover -s tests -p 'test_marketing_studio.py' -v
+      - name: Agent 18 produce and Agent 21 independently inspect
+        run: python -m src.daily_video_pipeline
+      - name: Upload video draft and QA evidence for manual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-video-draft-and-qa
+          path: |
+            output/daily/*.json
+            output/daily/media/*.mp4
+          if-no-files-found: warn
+          retention-days: 7
