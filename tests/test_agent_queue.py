@@ -87,6 +87,23 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(blocked[0]["status"], "BLOCKED")
         self.assertEqual(blocked[0]["reason"], "DEPENDENCY_NOT_COMPLETED")
 
+    def test_awin_agent_blocks_missing_feed(self):
+        agent_queue.enqueue("05", "awin-missing", "AUDIT_FEED:data/awin/incoming/absent.csv.gz")
+        result = agent_queue.process()[0]
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertEqual(result["reason"], "AWIN_FEED_UNAVAILABLE")
+        self.assertFalse(result["published"])
+
+    def test_awin_agent_rejects_unsafe_path(self):
+        agent_queue.enqueue("05", "awin-unsafe", "AUDIT_FEED:../../private.csv.gz")
+        result = agent_queue.process()[0]
+        self.assertEqual(result["reason"], "AWIN_FEED_PATH_INVALID")
+
+    def test_awin_agent_requires_explicit_feed(self):
+        agent_queue.enqueue("05", "awin-no-path", "Download feeds from internet")
+        result = agent_queue.process()[0]
+        self.assertEqual(result["reason"], "AWIN_FEED_PATH_REQUIRED")
+
     def test_rejects_self_dependency(self):
         with self.assertRaises(ValueError):
             agent_queue.enqueue("01", "same-id", "Cycle", ["same-id"])
