@@ -96,7 +96,7 @@
       "id": "14",
       "name": "Content-Stratege",
       "slug": "content-stratege",
-      "executor": null,
+      "executor": "advertising_director_draft",
       "autonomy": "L0_READ_ONLY"
     },
     {
@@ -145,7 +145,7 @@
       "id": "21",
       "name": "Video-QA",
       "slug": "video-qa",
-      "executor": null,
+      "executor": "video_technical_qa",
       "autonomy": "L0_READ_ONLY"
     },
     {
