@@ -28,6 +28,9 @@ def run(root):
         # Do not expose them through public logs, reports or artifacts.
     try:
         audit = download_and_audit(url, root=root, candidate_callback=select)
+        audit_path = root / "reports/awin_feed_status.json"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         if audit.get("status") != "COMPLETED":
             result.update(status="BLOCKED", reason="AWIN_AUDIT_FAILED")
     except Exception as exc:
