@@ -58,5 +58,35 @@ class TestQueue(unittest.TestCase):
             agent_queue.process()
         self.assertTrue(path.exists())
 
+    def test_real_read_only_agents(self):
+        agent_queue.enqueue("02", "status-check", "Check role definitions")
+        agent_queue.enqueue("37", "devops-check", "Check local workflow files")
+        receipts = agent_queue.process()
+        self.assertEqual(len(receipts), 2)
+        self.assertTrue(all(r["status"] == "COMPLETED" for r in receipts))
+        self.assertTrue(all(not r["external_mutation"] for r in receipts))
+
+    def test_dependency_wait_then_release(self):
+        agent_queue.enqueue("01", "later-task", "Wait for status", ["status-task"])
+        self.assertEqual(agent_queue.process(), [])
+        agent_queue.enqueue("02", "status-task", "Verify registry")
+        result = agent_queue.process()
+        self.assertEqual([r["task_id"] for r in result], ["status-task"])
+        result = agent_queue.process()
+        self.assertEqual([r["task_id"] for r in result], ["later-task"])
+        self.assertEqual(result[0]["status"], "NEEDS_REVIEW")
+
+    def test_blocked_dependency_stops_followup(self):
+        agent_queue.enqueue("22", "fact-check", "No evidence")
+        agent_queue.enqueue("24", "post-later", "No posting", ["fact-check"])
+        agent_queue.process()
+        result = agent_queue.process()
+        self.assertEqual(result[0]["status"], "BLOCKED")
+        self.assertEqual(result[0]["reason"], "DEPENDENCY_NOT_COMPLETED")
+
+    def test_rejects_self_dependency(self):
+        with self.assertRaises(ValueError):
+            agent_queue.enqueue("01", "same-id", "Cycle", ["same-id"])
+
 if __name__ == "__main__":
     unittest.main()
