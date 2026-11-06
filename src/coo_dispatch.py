@@ -15,6 +15,8 @@ def dispatch(root=None, day=None):
     if not (len(day) == 8 and day.isascii() and day.isdigit()):
         raise ValueError("Invalid day")
     orders = (
+        ("05", "deals", "Audit existing and newly available Awin product feeds; flag unverified deal candidates and missing approvals."),
+        ("14", "creative", "Review candidate deals for a factual advertising brief; block when merchant approval, CHF price or Swiss delivery is unverified."),
         ("18", "produce", "Prepare one new vertical advertising video draft with verified source material. No publication."),
         ("21", "qa", "Independently review today's video draft, technical parameters and rights evidence. Do not approve without evidence."),
         ("24", "publish", "Check whether an approved video can be published today. If not, report blocker. Never publish without explicit owner approval and gate."),
