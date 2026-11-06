@@ -1,0 +1,38 @@
+name: DealRadar Awin Feed Audit
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 5 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: dealradar-awin-feed-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      AWIN_FEED_URL: ${{ secrets.AWIN_FEED_URL }}
+      DRY_RUN: 'true'
+      PUBLISHING_ENABLED: 'false'
+      MODE: GROWTH
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run offline security tests
+        run: python -m unittest discover -s tests -p 'test_awin_fetch.py' -v
+      - name: Fetch and audit approved Awin feed
+        run: python -m src.awin_feed_fetch --out reports/awin_feed_status.json
+      - name: Upload audit summary only (never upload feed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: awin-audit-summary
+          path: reports/awin_feed_status.json
+          if-no-files-found: ignore
+          retention-days: 7
