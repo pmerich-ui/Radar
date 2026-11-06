@@ -1,0 +1,83 @@
+{
+  "status": "OPERATING_REVIEW",
+  "daily_target_produced": 1,
+  "daily_target_published": 1,
+  "utc_day": "2026-11-06",
+  "produced_today_verified": 0,
+  "published_today_verified": 0,
+  "publication_evidence": "platform_post_id plus published_at_utc; never count upload as publication",
+  "remediation_triggered": true,
+  "remediation_mode": "ESCALATE_AND_PREPARE_ONLY; NO_UNAPPROVED_PUBLISHING",
+  "target_monthly_net_chf": 10000,
+  "actual_monthly_net_chf": null,
+  "actual_status": "DATA_UNAVAILABLE",
+  "gap_to_target_chf": null,
+  "target_is_guarantee": false,
+  "role_contracts": 38,
+  "registered_executors": 5,
+  "pending_tasks": 0,
+  "pending_ids": [],
+  "blocked_or_review_receipts": 5,
+  "blocker_examples": [
+    {
+      "task_id": "coo-20261106-creative",
+      "reason": "ROLE_DEFINED_BUT_NO_AUTHORIZED_EXECUTOR"
+    },
+    {
+      "task_id": "coo-20261106-deals",
+      "reason": "AWIN_FEED_PATH_REQUIRED"
+    },
+    {
+      "task_id": "coo-20261106-produce",
+      "reason": "ROLE_DEFINED_BUT_NO_AUTHORIZED_EXECUTOR"
+    },
+    {
+      "task_id": "coo-20261106-publish",
+      "reason": "EXTERNAL_AUTHORIZATION_OR_VERIFIED_DATA_REQUIRED"
+    },
+    {
+      "task_id": "coo-20261106-qa",
+      "reason": "REQUIRES_INPUT_EVIDENCE_AND_INDEPENDENT_QA"
+    }
+  ],
+  "priorities": [
+    {
+      "priority": "P0",
+      "owner": "24",
+      "action": "Check approval, rights, QA and publishing connection; prepare approved video for publishing; escalate if blocked",
+      "state": "DAILY_PUBLICATION_NOT_VERIFIED"
+    },
+    {
+      "priority": "P0",
+      "owner": "18",
+      "action": "Produce and technically QA a new video today; diagnose render or source blockers",
+      "state": "DAILY_PRODUCTION_NOT_VERIFIED"
+    },
+    {
+      "priority": "P0",
+      "owner": "05",
+      "action": "Verify configured Awin feed and successful read-only audit",
+      "state": "UNVERIFIED"
+    },
+    {
+      "priority": "P0",
+      "owner": "32",
+      "action": "Connect approved commission export and reconcile confirmed net CHF",
+      "state": "DATA_UNAVAILABLE"
+    },
+    {
+      "priority": "P1",
+      "owner": "18",
+      "action": "Prove advertising brief -> render -> independent video QA",
+      "state": "UNVERIFIED"
+    },
+    {
+      "priority": "P1",
+      "owner": "24",
+      "action": "Test platform integration without publishing until owner approval",
+      "state": "UNVERIFIED"
+    }
+  ],
+  "publishing_enabled": false,
+  "new_spend_authorized": false
+}

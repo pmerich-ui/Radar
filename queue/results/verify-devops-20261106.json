@@ -1,0 +1,11 @@
+{
+  "agent_id": "37",
+  "evidence_level": "E0",
+  "external_mutation": false,
+  "published": false,
+  "reason": "LOCAL_WORKFLOW_FILES_VERIFIED_NO_RUNTIME_CLAIM",
+  "source": "local deterministic queue worker",
+  "status": "COMPLETED",
+  "task_id": "verify-devops-20261106",
+  "timestamp_utc": "2026-11-06T15:57:09.305521+00:00"
+}
