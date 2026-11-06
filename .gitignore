@@ -4,3 +4,7 @@ __pycache__/
 *.wav
 output/
 .env
+
+# Never commit Awin exports or credential-bearing feed URLs
+data/awin/incoming/
+*.csv.gz
