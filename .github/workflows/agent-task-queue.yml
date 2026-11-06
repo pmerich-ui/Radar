@@ -47,6 +47,8 @@ jobs:
           TASK_ID: ${{ inputs.task_id }}
           TASK_DESCRIPTION: ${{ inputs.description }}
         run: python -m src.agent_queue enqueue --agent "$TASK_AGENT" --task-id "$TASK_ID" --description "$TASK_DESCRIPTION"
+      - name: COO dispatch daily production QA and publisher work orders
+        run: python -m src.coo_dispatch
       - name: Process pending tasks (no external side effects)
         run: python -m src.agent_queue work
       - name: Write evidence-based status report
@@ -57,7 +59,7 @@ jobs:
         run: |
           git config user.name 'dealradar-agent-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A queue/pending queue/results reports/status.md reports/coo_status.json
+          git add -A queue/pending queue/results reports/status.md reports/coo_status.json reports/coo_dispatch.json
           if ! git diff --cached --quiet; then
             git commit -m 'Record DealRadar task queue receipts'
             git push
