@@ -33,7 +33,7 @@
       "id": "05",
       "name": "Feed-Import",
       "slug": "feed-import",
-      "executor": null,
+      "executor": "awin_feed_audit_local",
       "autonomy": "L0_READ_ONLY"
     },
     {
