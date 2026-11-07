@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+WORKDIR /app
+COPY agents/registry.json agents/registry.json
+COPY tools/generate_agents.py tools/generate_agents.py
+COPY agents agents
+COPY src src
+ENV PYTHONUNBUFFERED=1
+ENV PUBLISHING_ENABLED=false
+ENV DRY_RUN=true
+CMD ["python","-m","src.ceo_worker"]
