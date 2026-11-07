@@ -2,7 +2,7 @@
   "status": "OPERATING_REVIEW",
   "daily_target_produced": 1,
   "daily_target_published": 1,
-  "utc_day": "2026-11-06",
+  "utc_day": "2026-11-07",
   "produced_today_verified": 0,
   "published_today_verified": 0,
   "publication_evidence": "platform_post_id plus published_at_utc; never count upload as publication",
@@ -17,7 +17,7 @@
   "registered_executors": 5,
   "pending_tasks": 0,
   "pending_ids": [],
-  "blocked_or_review_receipts": 5,
+  "blocked_or_review_receipts": 10,
   "blocker_examples": [
     {
       "task_id": "coo-20261106-creative",
@@ -37,6 +37,26 @@
     },
     {
       "task_id": "coo-20261106-qa",
+      "reason": "REQUIRES_INPUT_EVIDENCE_AND_INDEPENDENT_QA"
+    },
+    {
+      "task_id": "coo-20261107-creative",
+      "reason": "ROLE_DEFINED_BUT_NO_AUTHORIZED_EXECUTOR"
+    },
+    {
+      "task_id": "coo-20261107-deals",
+      "reason": "AWIN_FEED_PATH_REQUIRED"
+    },
+    {
+      "task_id": "coo-20261107-produce",
+      "reason": "ROLE_DEFINED_BUT_NO_AUTHORIZED_EXECUTOR"
+    },
+    {
+      "task_id": "coo-20261107-publish",
+      "reason": "EXTERNAL_AUTHORIZATION_OR_VERIFIED_DATA_REQUIRED"
+    },
+    {
+      "task_id": "coo-20261107-qa",
       "reason": "REQUIRES_INPUT_EVIDENCE_AND_INDEPENDENT_QA"
     }
   ],
