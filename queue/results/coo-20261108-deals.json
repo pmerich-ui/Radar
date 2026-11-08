@@ -1,0 +1,11 @@
+{
+  "agent_id": "05",
+  "evidence_level": "E0",
+  "external_mutation": false,
+  "published": false,
+  "reason": "AWIN_FEED_PATH_REQUIRED",
+  "source": "local deterministic queue worker",
+  "status": "BLOCKED",
+  "task_id": "coo-20261108-deals",
+  "timestamp_utc": "2026-11-08T06:04:40.048223+00:00"
+}
