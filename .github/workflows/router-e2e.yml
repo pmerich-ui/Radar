@@ -1,0 +1,59 @@
+name: DealRadar Router End-to-End QA
+on:
+  push:
+    paths:
+      - '.github/workflows/router-e2e.yml'
+      - 'src/video_provider_router.py'
+      - 'src/local_video_adapter.py'
+      - 'tests/test_video_provider_router.py'
+      - 'tests/test_local_video_adapter.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  router-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install rendering dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install -r requirements.txt
+      - name: Run router tests
+        run: python -m unittest tests.test_video_provider_router tests.test_local_video_adapter -v
+      - name: Render MP4
+        run: |
+          mkdir -p output
+          python -m src.local_video_adapter --output output/router-e2e.mp4 | tee output/router-e2e.json
+      - name: Independently verify MP4 and publication block
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          report=json.loads(Path('output/router-e2e.json').read_text())
+          assert report['status']=='RENDERED_UNREVIEWED',report
+          assert report['publication_authorized'] is False
+          p=Path(report['file'])
+          assert p.is_file() and p.stat().st_size>100000
+          info=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)],text=True))
+          video=next(s for s in info['streams'] if s['codec_type']=='video')
+          audio=next(s for s in info['streams'] if s['codec_type']=='audio')
+          assert (video['width'],video['height'])==(1080,1920)
+          assert video['codec_name']=='h264' and audio['codec_name']=='aac'
+          assert 15<=float(info['format']['duration'])<=30
+          subprocess.run(['ffmpeg','-v','error','-i',str(p),'-f','null','-'],check=True,timeout=180)
+          print('MP4_DECODE_AND_STREAMS_PASS; CREATIVE_REVIEW_REQUIRED; NOT_PUBLISHED')
+          PY
+      - name: Upload review-only video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dealradar-router-e2e
+          path: output/
+          retention-days: 7
+          if-no-files-found: warn
