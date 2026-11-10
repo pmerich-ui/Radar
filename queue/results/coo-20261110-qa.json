@@ -1,0 +1,11 @@
+{
+  "agent_id": "21",
+  "evidence_level": "E0",
+  "external_mutation": false,
+  "published": false,
+  "reason": "REQUIRES_INPUT_EVIDENCE_AND_INDEPENDENT_QA",
+  "source": "local deterministic queue worker",
+  "status": "BLOCKED",
+  "task_id": "coo-20261110-qa",
+  "timestamp_utc": "2026-11-10T04:38:18.024588+00:00"
+}
