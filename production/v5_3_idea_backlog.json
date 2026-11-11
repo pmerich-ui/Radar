@@ -1,0 +1,143 @@
+{
+  "version": "5.3",
+  "brandId": "7820933",
+  "platform": "tiktok",
+  "timezone": "Europe/Zurich",
+  "targetTime": "18:00",
+  "mix": {
+    "comedy": 6,
+    "dealComedy": 3,
+    "verifiedProductTest": 1
+  },
+  "rules": {
+    "style": "photorealistic smartphone mockumentary, adults, realistic physics",
+    "aiDisclosure": true,
+    "automaticPublishing": false,
+    "commercialRightsRequired": true,
+    "userApprovalRequired": true,
+    "minimumQaScore": 85,
+    "paidToolsAllowed": false
+  },
+  "ideas": [
+    {
+      "id": "C01",
+      "category": "comedy",
+      "title": "Matterhorn-Frisur",
+      "concept": "Coiffeur formt fotorealistisches Matterhorn aus Haar; trockene Reaktion: 'Mit oder ohni Gipfelbillet?'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "C02",
+      "category": "comedy",
+      "title": "Kabel-Schwertransport",
+      "concept": "Kran liefert gigantischen Karton; darin einzig ein Ladekabel; 'Wotsch no es Säckli dezue?'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "C03",
+      "category": "comedy",
+      "title": "Kassenbon bis zum See",
+      "concept": "Kassenbon rollt realistisch über Dorfplatz bis zum See; 'Quittig per Mail wär au gange.'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "C04",
+      "category": "comedy",
+      "title": "Einkaufswagen-Skilift",
+      "concept": "Ein überdimensionierter, sicher abgestellter Einkaufswagen wird per Filmtrick wie eine Gondel präsentiert; 'Bergfahrt isch separat.'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "C05",
+      "category": "comedy",
+      "title": "Coiffeur-Wetterstation",
+      "concept": "Eine fotorealistische Haarfrisur trägt kleine Wetterfahne; Kunde: 'Und wie isch d Prognose?'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "C06",
+      "category": "comedy",
+      "title": "Fondue-Roboter",
+      "concept": "Im Schaufenster präsentiert ein übertrieben grosser, rein fiktiver Fondue-Rührarm eine winzige Portion; 'Für zwei Persone?'",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "D01",
+      "category": "deal-comedy",
+      "title": "Rabatt-Lupe",
+      "concept": "Kunde entdeckt eine mikroskopisch kleine Preissenkung durch riesige Lupe; keine realen Preisangaben",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "D02",
+      "category": "deal-comedy",
+      "title": "Gutschein-Tresor",
+      "concept": "Verkäufer öffnet übertriebenen Hochsicherheitstresor für einen symbolischen Gutschein; keine echten Konditionen",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "D03",
+      "category": "deal-comedy",
+      "title": "Preisvergleich-Satellit",
+      "concept": "Fiktive Kontrollzentrale behandelt zwei gewöhnliche Preisschilder wie eine Weltraummission; keine konkreten Preisversprechen",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    },
+    {
+      "id": "P01",
+      "category": "verified-product-test",
+      "title": "Tatsächlicher Produkttest",
+      "concept": "Erst nach nachgewiesenem Besitz, Produktidentität, Messprotokoll, Rechten und belegten Ergebnissen produzieren",
+      "status": "IDEA_ONLY",
+      "asset": null,
+      "qa": null,
+      "rights": null,
+      "userApproval": null,
+      "publishedUrl": null
+    }
+  ]
+}
