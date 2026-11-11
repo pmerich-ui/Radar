@@ -36,3 +36,23 @@ python -m unittest discover -s tests -v
 7. Save privately for **manual approval only**; no social-media publishing.
 
 **Not yet implemented:** live provider adapters, account OAuth, persistent retry ledger, voice/music generation, actual video montage and 85/100 audiovisual evaluator. This is a tested catalogue and policy/router foundation, NOT a deployed autonomous production system.
+
+
+## Completed provider-by-provider screening (2026-11-11)
+
+The full 51-entry table is `providers.json`. Breakdown: **45 public-official-plan/terms reviews, 5 connected ChatGPT-account checks, 1 unresolved official source (Kling AI)**. This is **not** 50 API integrations and does not certify every free output as commercial.
+
+Potential free commercially licensed services (model- and export-specific eligibility still requires a real free-account quote): Leonardo.Ai, Runway, Adobe Firefly-owned models, Fotor, Vidnoz, Clipfly, SeaArt's specific SkyReels-V3 implementation, Canva's free 5-second image-to-video. For self-hosting: Wan 2.2 and Mochi 1, plus strictly Apache-2.0 CogVideoX-2B weights, but only if compute is actually free.
+
+Known commercial blocks or restrictions include PixVerse, Pika, Krea, Luma, LTX Studio, Genmo free, Kaiber's paid trial, renderforest, HeyGen, OpenArt, Freepik and Pollo. Others are allowed into the research register but blocked from deployment until exact model permissions and account-level pricing are verified.
+
+Connected-service snapshots (read-only, 2026-11-11):
+- Creative Claw 12 credits; the verified low-cost 5-second 480p quote is 15 Seedance Mini credits or 25 MiniMax H3 Turbo credits; no affordable selected request.
+- Higgsfield 10 credits and one free *motion-control* operation requiring source content; no pure text-to-video free model seen.
+- Invideo 31.7 credits; full commercial export allowance unknown.
+- VEED 50 AI Playground credits, available tool is talking-head avatars, not a general three-person cinematic scene generator.
+- fal.ai connected account reports out-of-credits billing block; DO NOT retry, buy, or switch accounts.
+
+**Important limitation:** `providers.json` lists prospective integrations; `automatic_adapter:false` for all 51. No authenticated callable zero-cost ad-video provider was installed in this branch. Unconnected browser sites cannot be automatically turned into APIs by listing them. Live provider selection will be possible only after approved official adapters and each current-account license/credit check are implemented.
+
+The current audit is read-only and all providers are fail-closed without live proofs. CI / local tests, verified MP4 assets, audible Swiss German/music, quality scoring and production deployment must be checked independently. No video generation or publishing has been performed by this integration work.
