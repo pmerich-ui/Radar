@@ -17,7 +17,7 @@ def validate_space_url(url):
     parsed = urlsplit(url)
     if (parsed.scheme != "https" or parsed.username or parsed.password or
             parsed.port is not None or parsed.query or parsed.fragment or
-            not re.fullmatch(r"[a-z0-9][a-z0-9-]*\\.hf\\.space", parsed.hostname or "") or
+            not re.fullmatch(r"[a-z0-9][a-z0-9-]*\.hf\.space", parsed.hostname or "") or
             parsed.path not in ("", "/")):
         raise CloudRenderError("Only a direct HTTPS *.hf.space Gradio host is accepted")
     return "https://" + parsed.hostname
