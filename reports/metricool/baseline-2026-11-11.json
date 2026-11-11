@@ -1,0 +1,67 @@
+{
+  "observed_at": "2026-11-11T18:06:50+01:00",
+  "source": "Metricool TikTok posts analytics, brand 7820933",
+  "kind": "LATE_BASELINE_NOT_24H_SNAPSHOT",
+  "videos": [
+    {
+      "tiktok_id": "7706032610681703702",
+      "duration_s": 6,
+      "views": 72,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_s": null
+    },
+    {
+      "tiktok_id": "7705854698452045078",
+      "duration_s": 17,
+      "views": 86,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_s": null
+    },
+    {
+      "tiktok_id": "7705603829588380950",
+      "duration_s": 8,
+      "views": 81,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_s": null
+    },
+    {
+      "tiktok_id": "7705510446291291414",
+      "duration_s": 6,
+      "views": 77,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_s": null
+    },
+    {
+      "tiktok_id": "7705483497690991894",
+      "duration_s": 14,
+      "views": 71,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_s": null
+    }
+  ],
+  "median_views": 77,
+  "decision": "DATEN UNZUREICHEND",
+  "reason": "No 24h snapshot at the 24h boundary; no retention/completion/reach metrics; no comparable-length median with sufficient sample.",
+  "recommendation": "Replace generic package joy with a visually surprising realistic hook in first 1.5 seconds; test 15-20s clip after rights and QA approval.",
+  "publication_authorized": false
+}
