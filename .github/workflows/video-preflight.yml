@@ -2,6 +2,8 @@ name: DealRadar V5 MP4 preflight (no publishing)
 on:
   workflow_dispatch:
   push:
+    branches:
+      - feature/free-video-fallback-router-20261111
     paths:
       - scripts/video_preflight.py
       - .github/workflows/video-preflight.yml
@@ -12,12 +14,14 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Create real MP4 fixture with audio
+      - name: Create technical MP4 fixture with audio
         run: |
           mkdir -p qa-output
           ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1080x1920:rate=24 -f lavfi -i sine=frequency=440:sample_rate=44100 -t 16 -c:v libx264 -preset ultrafast -threads 2 -pix_fmt yuv420p -c:a aac -shortest qa-output/technical-fixture.mp4
-      - name: Run technical preflight
+      - name: Run technical preflight (fail closed)
+        shell: bash
         run: |
+          set -o pipefail
           python3 scripts/video_preflight.py qa-output/technical-fixture.mp4 | tee qa-output/preflight.json
       - name: Save inspection evidence
         if: always()
