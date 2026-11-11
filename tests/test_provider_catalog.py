@@ -5,7 +5,7 @@ from video_router.provider_router import route_catalog
 class CatalogTests(unittest.TestCase):
     def test_contains_all_original_plus_connected(self):
         rows = load_catalog()
-        self.assertEqual(len(rows), 51)
+        self.assertEqual(len(rows), 55)
         self.assertIn("Creative Claw", {r["name"] for r in rows})
         self.assertIn("fal.ai", {r["name"] for r in rows})
     def test_unknown_rights_never_ready(self):
