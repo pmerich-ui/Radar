@@ -6,23 +6,18 @@ on:
       - feature/free-video-fallback-router-20261111
     paths:
       - scripts/video_preflight.py
+      - tests/test_video_preflight.py
       - .github/workflows/video-preflight.yml
 jobs:
   test-preflight:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Create technical MP4 fixture with audio
-        run: |
-          mkdir -p qa-output
-          ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc2=size=1080x1920:rate=24 -f lavfi -i sine=frequency=440:sample_rate=44100 -t 16 -c:v libx264 -preset ultrafast -threads 2 -pix_fmt yuv420p -c:a aac -shortest qa-output/technical-fixture.mp4
-      - name: Run technical preflight (fail closed)
-        shell: bash
-        run: |
-          set -o pipefail
-          python3 scripts/video_preflight.py qa-output/technical-fixture.mp4 | tee qa-output/preflight.json
+      - name: Regression tests with real synthetic MP4 and invalid inputs
+        run: python3 tests/test_video_preflight.py
       - name: Save inspection evidence
         if: always()
         uses: actions/upload-artifact@v4
