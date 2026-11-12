@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 METRICS=("TKPO02","TKPO03","TKPO06","TKPO07","TKPO08","TKPO09","TKPO10","TKPO11","TKPO13","TKPO15")
+PERFORMANCE_METRICS=("TKPO07","TKPO08","TKPO09","TKPO10","TKPO11","TKPO13","TKPO15")
 def parse_time(value):
     if not isinstance(value,str): raise ValueError("timestamp_required")
     dt=datetime.fromisoformat(value.replace("Z","+00:00"))
@@ -20,7 +21,8 @@ def record(db_path, video_id, published_at, observed_at, metrics):
     if not isinstance(metrics,dict): raise ValueError("metrics_object_required")
     values={key:metrics.get(key) for key in METRICS}
     available={k:v for k,v in values.items() if v is not None}
-    if not available: return {"status":"DATA_UNAVAILABLE","video_id":video_id}
+    if not any(values[k] is not None for k in PERFORMANCE_METRICS):
+        return {"status":"DATA_UNAVAILABLE","video_id":video_id,"reason":"no_performance_metrics"}
     p=Path(db_path);p.parent.mkdir(parents=True,exist_ok=True)
     with sqlite3.connect(p,timeout=20) as con:
         con.execute("PRAGMA busy_timeout=20000")
