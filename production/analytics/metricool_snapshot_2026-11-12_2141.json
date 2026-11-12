@@ -1,0 +1,125 @@
+{
+  "observed_at": "2026-11-12T21:41:00+01:00",
+  "source": "Metricool getAnalyticsAvailableMetrics and getAnalyticsDataByMetrics",
+  "brand_id": "7820933",
+  "network": "tiktok",
+  "connector": "posts",
+  "measurement_type": "cumulative_as_of_observation_not_24h",
+  "assessment": "DATEN UNZUREICHEND",
+  "missing_metrics": [
+    "TKPO11",
+    "TKPO13",
+    "TKPO15"
+  ],
+  "posts": [
+    {
+      "published_raw": "20261109050221",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7706032610681703702",
+      "duration_seconds": 6,
+      "views": 72,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261108173137",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705854698452045078",
+      "duration_seconds": 17,
+      "views": 86,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261108011820",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705603829588380950",
+      "duration_seconds": 8,
+      "views": 81,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261107191544",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705510446291291414",
+      "duration_seconds": 6,
+      "views": 77,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261107173111",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705483497690991894",
+      "duration_seconds": 14,
+      "views": 71,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261106191522",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705139266686356758",
+      "duration_seconds": 6,
+      "views": 78,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261106173130",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7705112481718488342",
+      "duration_seconds": 17,
+      "views": 89,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261105191533",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7704768228207217942",
+      "duration_seconds": 6,
+      "views": 86,
+      "likes": 1,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    },
+    {
+      "published_raw": "20261105173217",
+      "url": "https://www.tiktok.com/@dy3ko4nveu0o/video/7704741614119374102",
+      "duration_seconds": 14,
+      "views": 81,
+      "likes": 0,
+      "comments": 0,
+      "shares": 0,
+      "reach": null,
+      "completion_rate": null,
+      "average_watch_time": null
+    }
+  ],
+  "note": "Do not mark any 24h analysis completed based on this snapshot. Never infer watch time, reach, or 24h metrics. No publishing authorized."
+}
