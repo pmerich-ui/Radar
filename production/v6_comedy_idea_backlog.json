@@ -23,8 +23,8 @@
     {
       "id": "C02",
       "category": "comedy",
-      "style": "fruit3d",
-      "concept": "Eine 3D-Erdbeere versucht ihren Rollkoffer zu ziehen, während eine Banane ihn unbemerkt als Taxi benutzt.",
+      "style": "photoreal",
+      "concept": "Ein Schweizer Bahnhof: ein Mann mit winzigem Rollkoffer wird von einem riesigen ferngesteuerten Koffer verfolgt; trockene Reaktion des Bahnhofspersonals.",
       "status": "IDEA_ONLY",
       "video_path": null,
       "technical_qa": "NOT_CHECKED",
@@ -59,8 +59,8 @@
     {
       "id": "C05",
       "category": "comedy",
-      "style": "fruit3d",
-      "concept": "Eine sprechende 3D-Birne versucht einen übergrossen Einkaufswagen durch eine winzige Tür zu schieben.",
+      "style": "photoreal",
+      "concept": "Eine erwachsene Kundin versucht einen absurd grossen Einkaufswagen durch die schmale Tür eines Schweizer Dorfladens zu manövrieren; alle bleiben todernst.",
       "status": "IDEA_ONLY",
       "video_path": null,
       "technical_qa": "NOT_CHECKED",
@@ -95,8 +95,8 @@
     {
       "id": "D02",
       "category": "deal_comedy",
-      "style": "fruit3d",
-      "concept": "Eine 3D-Banane vergleicht zwei leere Preisschilder und fragt, wo der echte Preis geblieben ist.",
+      "style": "photoreal",
+      "concept": "Ein Verkäufer präsentiert zwei leere Preisschilder an einem absurd grossen Schaufenster; ein Kunde fragt trocken, wo der Preis geblieben ist.",
       "status": "IDEA_ONLY",
       "video_path": null,
       "technical_qa": "NOT_CHECKED",
@@ -128,5 +128,7 @@
       "user_approved": false,
       "published_url": null
     }
-  ]
+  ],
+  "creative_policy": "V5.1/V5.2/V5.3: ausschließlich fotorealistische Menschen und realistische Mockumentary; keine Cartoon-, Comic- oder 3D-Fruchtfiguren; AI-Kennzeichnung; keine erfundenen Deals.",
+  "production_status": "IDEAS_ONLY_NOT_RENDERED"
 }
