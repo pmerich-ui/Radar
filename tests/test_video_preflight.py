@@ -38,6 +38,14 @@ with tempfile.TemporaryDirectory() as tmp:
     report = check(fixture, 0)
     assert report["status"] == "TECHNICAL_PASS", report
     assert report["technical_score"] == 100, report
+    assert report["checks"]["video_decodes_cleanly"] is True, report
+    assert report["checks"]["audio_decodes_cleanly"] is True, report
+    # A deliberately truncated real MP4 must never pass technical QA.
+    truncated = folder / "truncated.mp4"
+    with fixture.open("rb") as source, truncated.open("wb") as target:
+        target.write(source.read(max(1024, fixture.stat().st_size // 2)))
+    damaged = check(truncated, 1)
+    assert damaged["status"] == "BLOCKED", damaged
     (ROOT / "qa-output").mkdir(exist_ok=True)
-    (ROOT / "qa-output" / "preflight.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print("PASS: missing, empty and invalid files blocked; real synthetic MP4 technically passed; publishing remains blocked")
+    (ROOT / "qa-output" / "preflight.json").write_text(json.dumps({"evidence_type": "SYNTHETIC_TEST_FIXTURE", "production_video": False, "publication_authorized": False, "preflight": report}, indent=2), encoding="utf-8")
+    print("PASS: missing, empty, invalid and truncated MP4 blocked; synthetic fixture passes technical QA only; publishing remains blocked")
