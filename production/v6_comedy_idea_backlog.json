@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "project": "DealRadar Schweiz",
+  "publication_allowed": false,
+  "quality_threshold": 85,
+  "rights_verified": false,
+  "ai_disclosure_required": true,
+  "commercial_claims_require_evidence": true,
+  "generated_videos": 0,
+  "ideas": [
+    {
+      "id": "C01",
+      "category": "comedy",
+      "style": "dance",
+      "concept": "Drei Männer mit riesigen Damenfrisuren tanzen synchron am Alpensee; eine Windböe dreht alle Perücken gleichzeitig.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "C02",
+      "category": "comedy",
+      "style": "fruit3d",
+      "concept": "Eine 3D-Erdbeere versucht ihren Rollkoffer zu ziehen, während eine Banane ihn unbemerkt als Taxi benutzt.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "C03",
+      "category": "comedy",
+      "style": "dance",
+      "concept": "Drei Männer im rot-weissen Cheerleader-Outfit tanzen todernst vor Bergkulisse; ein Alphorn setzt als absurde Pointe ein.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "C04",
+      "category": "comedy",
+      "style": "photoreal",
+      "concept": "Coiffeur formt eine Matterhorn-Frisur aus echtem Haar; Kunde fragt trocken nach der Gondel.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "C05",
+      "category": "comedy",
+      "style": "fruit3d",
+      "concept": "Eine sprechende 3D-Birne versucht einen übergrossen Einkaufswagen durch eine winzige Tür zu schieben.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "C06",
+      "category": "comedy",
+      "style": "photoreal",
+      "concept": "Eine Schweizer Person bestellt einen winzigen Hut; Coiffeur präsentiert einen absurd grossen Hut aus echtem Haar.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "D01",
+      "category": "deal_comedy",
+      "style": "photoreal",
+      "concept": "Beim Vergleich zweier Einkaufstaschen klappt die günstigere wie ein riesiges Zelt auf; keine erfundenen Preise.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "D02",
+      "category": "deal_comedy",
+      "style": "fruit3d",
+      "concept": "Eine 3D-Banane vergleicht zwei leere Preisschilder und fragt, wo der echte Preis geblieben ist.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "D03",
+      "category": "deal_comedy",
+      "style": "dance",
+      "concept": "Drei tanzende Männer zeigen eine übertrieben lange Einkaufsliste; die Pointe ist ein einziger Einkaufsartikel.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    },
+    {
+      "id": "P01",
+      "category": "verified_product_test",
+      "style": "photoreal",
+      "concept": "Ein real erhältliches Produkt wird erst nach belegter Produktidentität und echten Testaufnahmen demonstriert.",
+      "status": "IDEA_ONLY",
+      "video_path": null,
+      "technical_qa": "NOT_CHECKED",
+      "rights_qa": "NOT_CHECKED",
+      "user_approved": false,
+      "published_url": null
+    }
+  ]
+}
