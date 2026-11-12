@@ -19,6 +19,13 @@ def record(db_path, video_id, published_at, observed_at, metrics):
     pub,obs=parse_time(published_at),parse_time(observed_at)
     if obs < pub+timedelta(hours=24): return {"status":"NOT_DUE","video_id":video_id}
     if not isinstance(metrics,dict): raise ValueError("metrics_object_required")
+    # A completed checkpoint takes precedence over a later incomplete API response.
+    existing=Path(db_path)
+    if existing.is_file():
+        with sqlite3.connect(existing,timeout=20) as check:
+            found=check.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='analytics_24h'").fetchone()
+            if found and check.execute("SELECT 1 FROM analytics_24h WHERE video_id=?",(video_id,)).fetchone():
+                return {"status":"ALREADY_RECORDED","video_id":video_id}
     values={key:metrics.get(key) for key in METRICS}
     available={k:v for k,v in values.items() if v is not None}
     if not any(values[k] is not None for k in PERFORMANCE_METRICS):
