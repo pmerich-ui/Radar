@@ -21,7 +21,14 @@ def decide(job, ledger):
     expected=job.get("sha256")
     if not isinstance(path,str) or not Path(path).is_file() or not isinstance(expected,str):
         return {"allowed":False,"reason":"missing_verified_video"}
-    actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    digest=hashlib.sha256()
+    try:
+        with Path(path).open("rb") as video_file:
+            for chunk in iter(lambda: video_file.read(1024 * 1024), b""):
+                digest.update(chunk)
+    except OSError:
+        return {"allowed":False,"reason":"video_read_failed"}
+    actual=digest.hexdigest()
     if actual!=expected: return {"allowed":False,"reason":"video_hash_mismatch"}
     if job.get("technical_report",{}).get("status")!="TECHNICAL_PASS":
         return {"allowed":False,"reason":"technical_report_not_passed"}
