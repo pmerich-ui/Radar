@@ -2,7 +2,7 @@
   "status": "OPERATING_REVIEW",
   "daily_target_produced": 1,
   "daily_target_published": 1,
-  "utc_day": "2026-11-11",
+  "utc_day": "2026-11-12",
   "produced_today_verified": 0,
   "published_today_verified": 0,
   "publication_evidence": "platform_post_id plus published_at_utc; never count upload as publication",
@@ -17,7 +17,7 @@
   "registered_executors": 5,
   "pending_tasks": 0,
   "pending_ids": [],
-  "blocked_or_review_receipts": 30,
+  "blocked_or_review_receipts": 35,
   "blocker_examples": [
     {
       "task_id": "coo-20261106-creative",

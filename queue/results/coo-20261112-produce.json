@@ -1,0 +1,11 @@
+{
+  "agent_id": "18",
+  "evidence_level": "E0",
+  "external_mutation": false,
+  "published": false,
+  "reason": "ROLE_DEFINED_BUT_NO_AUTHORIZED_EXECUTOR",
+  "source": "local deterministic queue worker",
+  "status": "NEEDS_REVIEW",
+  "task_id": "coo-20261112-produce",
+  "timestamp_utc": "2026-11-12T03:49:18.295366+00:00"
+}
