@@ -23,6 +23,14 @@ class LedgerTests(unittest.TestCase):
             self.assertEqual(r["status"],"DATA_UNAVAILABLE")
             r=record(db,"v2","2026-11-10T18:00:00Z","2026-11-12T18:00:00Z",{"TKPO08":0})
             self.assertEqual(r["status"],"RECORDED")
+    def test_metadata_only_does_not_consume_checkpoint(self):
+        with tempfile.TemporaryDirectory() as d:
+            db=str(Path(d)/"ledger.sqlite")
+            pub="2026-11-10T18:00:00Z"
+            meta=record(db,"v3",pub,"2026-11-11T18:10:00Z",{"TKPO02":pub,"TKPO03":"https://example.org/video","TKPO06":16})
+            self.assertEqual(meta["status"],"DATA_UNAVAILABLE")
+            due=record(db,"v3",pub,"2026-11-11T19:10:00Z",{"TKPO07":0})
+            self.assertEqual(due["status"],"RECORDED")
     def test_naive_timestamp_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             with self.assertRaises(ValueError):
