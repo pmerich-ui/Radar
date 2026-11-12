@@ -1,0 +1,65 @@
+{
+  "version": "6.0",
+  "updated": "2026-11-12",
+  "purpose": "DealRadar Schweiz original comedy production configuration; ideas are not video assets",
+  "format": {
+    "aspect_ratio": "9:16",
+    "preferred_resolution": "1080x1920",
+    "duration_seconds": [
+      10,
+      20
+    ],
+    "minimum_qa_score": 85
+  },
+  "creative": {
+    "styles": [
+      {
+        "id": "live_action_wig_dance",
+        "weight": 0.5,
+        "description": "Photorealistic adult performers with exaggerated feminine hairstyles, absurd choreography, Swiss alpine setting, physically credible movements"
+      },
+      {
+        "id": "cinematic_3d_character_comedy",
+        "weight": 0.5,
+        "description": "Polished original expressive 3D animated characters, including anthropomorphic fruit, absurd Swiss comedy; no imitation of copyrighted characters"
+      }
+    ],
+    "prohibited": [
+      "boring routine package-reveal humor",
+      "unverified discount claims",
+      "unlicensed soundtrack",
+      "unsafe real stunts"
+    ]
+  },
+  "budget": {
+    "additional_chf_spend_allowed": false,
+    "require_provider_quote_before_generation": true,
+    "require_commercial_rights_before_publication": true,
+    "prefer_reusable_character_assets": true,
+    "track_failed_generation_costs": true
+  },
+  "publication": {
+    "automatic": false,
+    "require_user_approval_for_specific_video": true,
+    "require_real_mp4": true,
+    "require_qa_pass": true,
+    "require_rights_clearance": true,
+    "require_verified_public_url": true
+  },
+  "pilot_jobs": [
+    {
+      "id": "V6-DANCE-001",
+      "style": "live_action_wig_dance",
+      "status": "IDEA_ONLY",
+      "concept": "Three adult men in red-white cheer outfits, enormous realistic women's hairstyles, synchronized deadpan dance at a Swiss alpine lake; punchline from one man's hair suddenly hiding the mountain",
+      "mp4": null
+    },
+    {
+      "id": "V6-3D-001",
+      "style": "cinematic_3d_character_comedy",
+      "status": "IDEA_ONLY",
+      "concept": "Original animated strawberry and banana-like fruit characters in an absurd Swiss shopping situation, expressive acting and surprise punchline, not copies of reference image",
+      "mp4": null
+    }
+  ]
+}
