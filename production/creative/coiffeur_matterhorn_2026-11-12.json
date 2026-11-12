@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "job_id": "dr-ch-coiffeur-matterhorn-20261112",
+  "status": "DRAFT_NOT_RENDERED",
+  "title": "Matterhorn-Coiffeur – dä günstig Schnitt",
+  "category": "swiss_absurd_comedy",
+  "duration_target_seconds": 18,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "visual_rules": [
+    "photorealistic adult people",
+    "Swiss salon, natural daylight, handheld phone realism",
+    "hair sculpted as realistic hair with believable gravity and styling support",
+    "no cartoon, no fake brand, no fabricated discounts",
+    "AI-generated label required at publication"
+  ],
+  "scenes": [
+    {
+      "seconds": "0-5",
+      "action": "Swiss salon: adult woman in chair asks for a simple haircut; stylist lifts cloth, camera discovers impossibly tall Matterhorn-shaped hairstyle made from real-looking hair",
+      "audio": "Salon ambience, scissors, quick surprised breath"
+    },
+    {
+      "seconds": "5-12",
+      "action": "Woman carefully stands and turns sideways; mountain-shaped hairstyle passes close to the doorway, another customer looks up in disbelief",
+      "audio": "Footsteps, subtle hair rustle, salon ambience"
+    },
+    {
+      "seconds": "12-18",
+      "action": "Stylist stays deadpan and says in Swiss German: 'D Gipfelzueschlag isch aber nöd debii.' Woman checks hairstyle in mirror; freeze-free natural end",
+      "audio": "Clean original spoken dialogue, ambience"
+    }
+  ],
+  "generation_prompt": "Vertical 9:16, 18-second photorealistic mockumentary smartphone video in a contemporary Swiss hair salon. Adult woman with an enormous sculpted Matterhorn-shaped hairstyle formed entirely of realistic human hair; believable strands, texture, structural styling, natural light and physics. Three shots with continuous character and hairstyle identity: immediate visual reveal, woman moving toward doorway, stylist delivering dry Swiss-German punchline. Realistic human expressions and motion, natural handheld movement, professional clean original audio. No text, no logos, no animation, no cartoon, no impossible body transformations. Clearly fictional AI comedy.",
+  "rights": {
+    "commercial_license": "UNVERIFIED",
+    "voice_rights": "UNVERIFIED",
+    "music": "NONE",
+    "third_party_content": "NONE_PLANNED"
+  },
+  "gates": {
+    "rendered_mp4": false,
+    "technical_qa_pass": false,
+    "visual_qa_score": null,
+    "commercial_rights_approved": false,
+    "user_approved": false,
+    "uploaded": false,
+    "published": false
+  },
+  "publish_policy": "NEVER_PUBLISH_WITHOUT_EXPLICIT_USER_APPROVAL",
+  "estimated_cost_chf": "NOT_VERIFIED",
+  "notes": "Creative job only; not a rendered MP4, not QA or license clearance."
+}
