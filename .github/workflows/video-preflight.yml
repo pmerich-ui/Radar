@@ -24,6 +24,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Install FFmpeg for MP4 regression fixtures
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n 1
       - name: Regression tests with real synthetic MP4 and invalid inputs
         run: python3 tests/test_video_preflight.py
       - name: Perchance zero-cost handoff safety regression
