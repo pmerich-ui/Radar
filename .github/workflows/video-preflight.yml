@@ -6,6 +6,8 @@ on:
       - feature/free-video-fallback-router-20261111
     paths:
       - scripts/video_preflight.py
+      - scripts/perchance_manual_handoff.py
+      - tests/test_perchance_handoff.py
       - scripts/publication_gate.py
       - scripts/test_publication_gate.py
       - scripts/analytics_24h.py
@@ -22,6 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Regression tests with real synthetic MP4 and invalid inputs
         run: python3 tests/test_video_preflight.py
+      - name: Perchance zero-cost handoff safety regression
+        run: python3 tests/test_perchance_handoff.py
       - name: Publication safety and idempotency regression tests
         run: python3 scripts/test_publication_gate.py
       - name: Persistent 24-hour analytics regression tests
