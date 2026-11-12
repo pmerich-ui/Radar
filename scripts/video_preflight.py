@@ -53,7 +53,7 @@ def inspect(path):
             checks["no_long_silence"]=silence.returncode==0 and "silence_start:" not in silence.stderr
         else: checks["no_long_silence"]=False
         weights={"mp4_container":10,"portrait_9_16":20,"resolution_1080x1920":10,"duration_15_20s":15,
-                 "audio_stream_present":15,"video_stream_present":15,"no_black_segments":10,"no_long_silence":5}
+                 "audio_stream_present":10,"video_stream_present":10,"no_black_segments":10,"no_long_silence":5,\n                 "video_decodes_cleanly":5,"audio_decodes_cleanly":5}
         result["technical_score"]=sum(weight for key,weight in weights.items() if checks.get(key) is True)
         result["issues"]=[key for key in weights if checks.get(key) is not True]
         result["issues"] += [key for key in ("video_decodes_cleanly","audio_decodes_cleanly") if checks.get(key) is not True]
