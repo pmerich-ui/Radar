@@ -26,11 +26,16 @@ jobs:
         run: python3 scripts/test_publication_gate.py
       - name: Persistent 24-hour analytics regression tests
         run: python3 scripts/test_analytics_24h.py
+      - name: Verify inspection evidence exists and is valid JSON
+        if: success()
+        run: |
+          test -s qa-output/preflight.json
+          python3 -m json.tool qa-output/preflight.json > /dev/null
       - name: Save inspection evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dealradar-preflight-evidence
           path: qa-output/preflight.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
