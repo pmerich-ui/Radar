@@ -28,6 +28,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_awin_fetch.py' -v
           python -m unittest discover -s tests -p 'test_awin_preflight.py' -v
+          python -m unittest discover -s tests -p 'test_coo_deal_pipeline_status.py' -v
       - name: Check Awin credential configuration
         id: awin_preflight
         run: python -m src.awin_preflight
