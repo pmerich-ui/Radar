@@ -30,6 +30,10 @@ def evaluate(payload):
         result = {"video_id":video_id,"url":url,"published_at":published.isoformat(),"observed_at":now.isoformat(),"note":"First eligible snapshot after 24h; not guaranteed exact 24h values."}
         for key in ("duration","views","likes","comments","shares","reach","completion_rate","average_watch_seconds"):
             result[key] = row.get(key)
+        # Do not permanently consume the once-only checkpoint when the API
+        # returned no performance observations at all. Retry on a later run.
+        if all(result[k] is None for k in ("views", "likes", "comments", "shares", "reach", "completion_rate", "average_watch_seconds")):
+            continue
         result["decision"] = "DATEN UNZUREICHEND" if result["completion_rate"] is None or result["average_watch_seconds"] is None else "WEITERENTWICKELN ODER VERBESSERN: compare to length-matched channel median"
         completed[video_id] = result
         results.append(result)
