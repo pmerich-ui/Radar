@@ -18,7 +18,7 @@ with tempfile.TemporaryDirectory() as tmp:
     assert data["automatic_scraping"] is False
     assert data["publication_allowed"] is False
     assert data["video_generated"] is False
-    assert {item["id"] for item in data["items"]} == {"dance", "fruit3d"}
+    assert {item["id"] for item in data["items"]} == {"dance", "matterhorn_hair"}
     for item in data["items"]:
         assert item["image_status"] == "NOT_GENERATED"
         assert item["video_status"] == "NOT_GENERATED"
@@ -26,4 +26,4 @@ with tempfile.TemporaryDirectory() as tmp:
         for field in ("image_prompt_file", "motion_prompt_file"):
             p = out / item[field]
             assert p.is_file() and p.read_text(encoding="utf-8").strip()
-print("PASS: manual handoff is fail-closed and produces two prompt sets")
+print("PASS: manual handoff is fail-closed and produces two prompt sets (dance and Matterhorn hair)")
