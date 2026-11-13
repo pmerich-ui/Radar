@@ -40,6 +40,20 @@ with tempfile.TemporaryDirectory() as tmp:
     assert report["technical_score"] == 100, report
     assert report["checks"]["video_decodes_cleanly"] is True, report
     assert report["checks"]["audio_decodes_cleanly"] is True, report
+    assert report["checks"]["audio_audible"] is True, report
+    # Regression: a valid AAC stream containing only digital silence is
+    # not audible and must never be eligible for publication.
+    muted = folder / "muted.mp4"
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                    "-i", str(fixture), "-f", "lavfi",
+                    "-i", "anullsrc=r=44100:cl=mono",
+                    "-map", "0:v:0", "-map", "1:a:0",
+                    "-c:v", "copy", "-c:a", "aac", "-t", "16",
+                    str(muted)], check=True, timeout=90)
+    muted_report = check(muted, 1)
+    assert muted_report["checks"]["audio_stream_present"] is True, muted_report
+    assert muted_report["checks"]["audio_audible"] is False, muted_report
+    assert muted_report["status"] == "BLOCKED", muted_report
     # A deliberately truncated real MP4 must never pass technical QA.
     truncated = folder / "truncated.mp4"
     with fixture.open("rb") as source, truncated.open("wb") as target:
