@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "job_id": "dr-ch-dancing-hairstyles-20261113",
+  "status": "DRAFT_NOT_RENDERED",
+  "title": "Coiffeur-Disco – Frisuren im Ausgang",
+  "category": "swiss_absurd_comedy",
+  "duration_target_seconds": 18,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "visual_rules": [
+    "photorealistic adult women and natural human movement",
+    "handheld smartphone mockumentary with realistic light and shadows",
+    "exaggerated oversized hairstyles built from believable human hair, not animated or sentient hair",
+    "no cartoons, CGI-looking hair, brands, fabricated prices or discount claims",
+    "AI-generated label required before any approved publication"
+  ],
+  "scenes": [
+    {
+      "seconds": "0-4",
+      "action": "Two adult women step out of a Swiss hair salon with enormous disco-ball-shaped hairstyles made from real-looking tightly styled hair; an ordinary passerby freezes in disbelief.",
+      "audio": "Street ambience and footsteps, no copyrighted music."
+    },
+    {
+      "seconds": "4-12",
+      "action": "The two women perform a short synchronized dance at a safe pedestrian plaza, their enormous hairstyles wobbling naturally with head movements, strands catching warm evening light; bystanders maintain deadpan reactions.",
+      "audio": "Original claps and footsteps recorded/created for the clip, no licensed song."
+    },
+    {
+      "seconds": "12-18",
+      "action": "A stylist emerges, checks one hairstyle with a comb and says dryly in Swiss German: 'D Frisur hebt. Aber dä Bus wartet nöd.' The women stop and glance at the approaching bus off-camera.",
+      "audio": "Clear original Swiss German dialogue, quiet city ambience."
+    }
+  ],
+  "generation_prompt": "Create an original 18-second vertical 9:16 photorealistic smartphone-style mockumentary in a Swiss city pedestrian plaza outside a modern hair salon. Two clearly adult women with unusually large sculpted disco-ball-shaped hairstyles made of realistic human hair, each hairstyle visibly anchored and styled, not a glowing object. Immediate astonishing reveal, synchronized brief safe dance with natural full-body motion and realistic hair movement, deadpan passerby reaction, dry Swiss German stylist punchline. Film-like lighting, believable physics and consistent identities across three cuts, crisp original speech and natural ambience. No cartoon, no illustrated people, no logos, no on-screen text, no music, no fake news framing. Fictional AI comedy.",
+  "rights": {
+    "commercial_license": "UNVERIFIED",
+    "voice_rights": "UNVERIFIED",
+    "music": "NONE",
+    "third_party_content": "NONE_PLANNED"
+  },
+  "gates": {
+    "rendered_mp4": false,
+    "technical_qa_pass": false,
+    "visual_qa_score": null,
+    "commercial_rights_approved": false,
+    "user_approved": false,
+    "uploaded": false,
+    "published": false
+  },
+  "publish_policy": "NEVER_PUBLISH_WITHOUT_EXPLICIT_USER_APPROVAL",
+  "estimated_cost_chf": "NOT_VERIFIED",
+  "notes": "New creative-only job; not an actual MP4 or verified generator license. Do not submit to any paid provider."
+}
