@@ -23,7 +23,11 @@ def evaluate(payload):
         url = row.get("url", "")
         parsed = urlparse(url)
         if parsed.scheme != "https" or parsed.hostname not in ("www.tiktok.com", "tiktok.com") or "/video/" not in parsed.path: continue
-        published = dt.datetime.fromisoformat(row["published_at"])
+        # One malformed Metricool row must not abort the entire hourly batch.
+        try:
+            published = dt.datetime.fromisoformat(row["published_at"])
+        except (KeyError, TypeError, ValueError):
+            continue
         if published.tzinfo is None or now - published < dt.timedelta(hours=24): continue
         video_id = parsed.path.rstrip("/").split("/")[-1]
         if not video_id.isdigit() or video_id in completed: continue
