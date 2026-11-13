@@ -34,9 +34,11 @@ jobs:
       - name: COO discover deal candidates and Agent 14 draft briefs (redacted summary)
         if: steps.awin_preflight.outputs.ready == 'true'
         run: python -m src.coo_deal_pipeline
-      - name: Explain blocked Awin import
+      - name: Fail clearly when Awin feed access is blocked
         if: steps.awin_preflight.outputs.ready != 'true'
-        run: echo 'Agent 05 blocked. See the workflow summary for the missing or invalid Awin secret.'
+        run: |
+          echo '::error title=Awin feed blocked::Awin feed secret missing or invalid. See Awin preflight summary; no offers were imported.'
+          exit 2
       - name: Upload audit summary only (never upload feed)
         if: always()
         uses: actions/upload-artifact@v4
