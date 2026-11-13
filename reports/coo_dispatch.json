@@ -1,13 +1,13 @@
 {
   "day_utc": "20261113",
-  "created": [
+  "created": [],
+  "existing": [
     "coo-20261113-deals",
     "coo-20261113-creative",
     "coo-20261113-produce",
     "coo-20261113-qa",
     "coo-20261113-publish"
   ],
-  "existing": [],
   "publication_authorized": false,
   "external_actions": false
 }
