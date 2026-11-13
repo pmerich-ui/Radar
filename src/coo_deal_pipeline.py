@@ -45,6 +45,9 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result))
+    # A blocked import must fail the GitHub Actions step; an exit code of zero
+    # would otherwise make a broken Awin pipeline appear healthy.
+    return 2 if result["status"] == "BLOCKED" else 0
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
