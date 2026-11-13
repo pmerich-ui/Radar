@@ -15,6 +15,7 @@ on:
       - tests/test_video_preflight.py
       - tests/test_comedy_backlog.py
       - production/v6_comedy_idea_backlog.json
+      - production/creative/**
       - .github/workflows/video-preflight.yml
 jobs:
   test-preflight:
