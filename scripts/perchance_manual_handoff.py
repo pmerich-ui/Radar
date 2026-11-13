@@ -18,8 +18,8 @@ STYLES = {
     },
     "matterhorn_hair": {
         "title": "Matterhorn-Frisur im Schweizer Coiffeursalon",
-        "prompt": "Vertical 9:16, photorealistic Swiss mockumentary smartphone footage aesthetic, adult male customer in an authentic Swiss hair salon, a professional stylist carefully shapes his real hair into a spectacular enormous Matterhorn mountain silhouette, visibly realistic hair strands and believable construction, serious reactions, natural Swiss daylight, authentic skin and hands, no cartoon, no CGI-looking characters, no words, no logos, no watermarks.",
-        "motion": "A Swiss hairdresser carefully adjusts the adult customer’s giant Matterhorn-shaped hairstyle; the customer inspects the mirror and deadpans with a straight face, believable human motion and hair physics, handheld smartphone mockumentary aesthetic, 10 seconds, no text.",
+        "prompt": "Vertical 9:16, photorealistic Swiss mockumentary smartphone footage aesthetic, adult woman customer in an authentic Swiss hair salon, a professional stylist carefully shapes her real hair into a spectacular enormous Matterhorn mountain silhouette, visibly realistic hair strands and believable construction, serious reactions, natural Swiss daylight, authentic skin and hands, no cartoon, no CGI-looking characters, no words, no logos, no watermarks.",
+        "motion": "A Swiss hairdresser carefully adjusts the adult woman's giant Matterhorn-shaped hairstyle; the woman inspects the mirror and deadpans with a straight face, believable human motion and hair physics, handheld smartphone mockumentary aesthetic, 10 seconds, no text.",
     },
 }
 
@@ -33,7 +33,7 @@ def main():
                 "workflow": "manual_browser_only", "cost_chf": 0,
                 "status": "AWAITING_MANUAL_IMAGES",
                 "created_utc": datetime.now(timezone.utc).isoformat(),
-                "commercial_rights": "Perchance-generated outputs allowed by its terms; review third-party rights",
+                "commercial_rights": "UNVERIFIED: review current provider terms, commercial-use permission, and third-party rights before use",
                 "api_access": False, "automatic_scraping": False,
                 "publication_allowed": False, "video_generated": False,
                 "items": []}
