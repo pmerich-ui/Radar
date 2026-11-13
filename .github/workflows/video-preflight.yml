@@ -11,6 +11,8 @@ on:
       - scripts/publication_gate.py
       - scripts/test_publication_gate.py
       - scripts/analytics_24h.py
+      - scripts/tiktok_24h_snapshot.py
+      - tests/test_tiktok_24h_empty_metrics.py
       - scripts/test_analytics_24h.py
       - tests/test_video_preflight.py
       - tests/test_video_preflight_malformed_metadata.py
@@ -43,6 +45,8 @@ jobs:
         run: python3 scripts/test_publication_gate.py
       - name: Persistent 24-hour analytics regression tests
         run: python3 scripts/test_analytics_24h.py
+      - name: TikTok 24h missing-metrics idempotency regression
+        run: python3 -m unittest discover -s tests -p 'test_tiktok_24h_empty_metrics.py' -v
       - name: Verify inspection evidence exists and is valid JSON
         if: success()
         run: |
