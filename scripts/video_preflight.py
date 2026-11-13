@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """DealRadar V5: fail-closed technical video preflight. No publishing."""
-import json, subprocess, sys
+import json, re, subprocess, sys
 from pathlib import Path
 
 def run(args):
@@ -52,8 +52,20 @@ def inspect(path):
             silence=run(["ffmpeg","-hide_banner","-nostats","-i",str(p),"-af","silencedetect=noise=-45dB:d=2","-vn","-f","null","-"])
             checks["no_long_silence"]=silence.returncode==0 and "silence_start:" not in silence.stderr
         else: checks["no_long_silence"]=False
+        # A present audio stream is not proof of audible audio. Reject fully
+        # silent or extremely quiet tracks, even if silencedetect misses them.
+        if audio and duration>0:
+            volume=run(["ffmpeg","-hide_banner","-nostats","-i",str(p),
+                        "-map","0:a:0","-af","volumedetect","-vn","-f","null","-"])
+            match=re.search(r"max_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf))\\s*dB",volume.stderr)
+            peak=float(match.group(1)) if match else float("-inf")
+            checks["audio_peak_dbfs"]=peak if peak!=float("-inf") else None
+            checks["audio_audible"]=volume.returncode==0 and peak>=-40.0
+        else:
+            checks["audio_peak_dbfs"]=None
+            checks["audio_audible"]=False
         weights={"mp4_container":10,"portrait_9_16":20,"resolution_1080x1920":10,"duration_15_20s":15,
-                 "audio_stream_present":10,"video_stream_present":10,"no_black_segments":10,"no_long_silence":5,
+                 "audio_stream_present":5,"audio_audible":5,"video_stream_present":10,"no_black_segments":10,"no_long_silence":5,
                  "video_decodes_cleanly":5,"audio_decodes_cleanly":5}
         result["technical_score"]=sum(weight for key,weight in weights.items() if checks.get(key) is True)
         result["issues"]=[key for key in weights if checks.get(key) is not True]
