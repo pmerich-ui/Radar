@@ -19,6 +19,17 @@ with tempfile.TemporaryDirectory() as tmp:
     assert data["publication_allowed"] is False
     assert data["video_generated"] is False
     assert {item["id"] for item in data["items"]} == {"dance", "matterhorn_hair"}
+    assert data["commercial_rights"].startswith("UNVERIFIED")
+    assert data["cost_chf"] == 0  # local prompt export only; not provider pricing
+    creative = json.loads((ROOT / "production/creative/coiffeur_matterhorn_2026-11-12.json").read_text(encoding="utf-8"))
+    assert creative["status"] == "DRAFT_NOT_RENDERED"
+    assert creative["rights"]["commercial_license"] == "UNVERIFIED"
+    assert all(value is False for key, value in creative["gates"].items() if isinstance(value, bool))
+    matterhorn = next(item for item in data["items"] if item["id"] == "matterhorn_hair")
+    image_prompt = (out / matterhorn["image_prompt_file"]).read_text(encoding="utf-8").lower()
+    motion_prompt = (out / matterhorn["motion_prompt_file"]).read_text(encoding="utf-8").lower()
+    assert "adult woman" in image_prompt and "woman" in motion_prompt
+    assert "matterhorn" in image_prompt and "matterhorn" in motion_prompt
     for item in data["items"]:
         assert item["image_status"] == "NOT_GENERATED"
         assert item["video_status"] == "NOT_GENERATED"
