@@ -72,8 +72,10 @@ def inspect(path):
         # Decode checks are already included in weights; never duplicate failure reasons.
         # Technical checks are not a visual-artifact review, rights clearance or user approval.
         result["status"]="TECHNICAL_PASS" if not result["issues"] else "BLOCKED"
-    except (OSError,ValueError,subprocess.TimeoutExpired,json.JSONDecodeError) as exc:
-        result["issues"].append(str(exc))
+    except (OSError, ValueError, TypeError, OverflowError, ZeroDivisionError,
+            subprocess.TimeoutExpired, json.JSONDecodeError) as exc:
+        # Malformed ffprobe metadata must produce a BLOCKED report, never a crash.
+        result["issues"].append(type(exc).__name__ + ": invalid media metadata or inspection failure")
     return result
 
 if __name__=="__main__":
