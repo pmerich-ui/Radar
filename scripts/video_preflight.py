@@ -69,7 +69,7 @@ def inspect(path):
                  "video_decodes_cleanly":5,"audio_decodes_cleanly":5}
         result["technical_score"]=sum(weight for key,weight in weights.items() if checks.get(key) is True)
         result["issues"]=[key for key in weights if checks.get(key) is not True]
-        result["issues"] += [key for key in ("video_decodes_cleanly","audio_decodes_cleanly") if checks.get(key) is not True]
+        # Decode checks are already included in weights; never duplicate failure reasons.
         # Technical checks are not a visual-artifact review, rights clearance or user approval.
         result["status"]="TECHNICAL_PASS" if not result["issues"] else "BLOCKED"
     except (OSError,ValueError,subprocess.TimeoutExpired,json.JSONDecodeError) as exc:
