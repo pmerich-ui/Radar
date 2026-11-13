@@ -57,7 +57,7 @@ def inspect(path):
         if audio and duration>0:
             volume=run(["ffmpeg","-hide_banner","-nostats","-i",str(p),
                         "-map","0:a:0","-af","volumedetect","-vn","-f","null","-"])
-            match=re.search(r"max_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf))\\s*dB",volume.stderr)
+            match=re.search(r"max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB",volume.stderr)
             peak=float(match.group(1)) if match else float("-inf")
             checks["audio_peak_dbfs"]=peak if peak!=float("-inf") else None
             checks["audio_audible"]=volume.returncode==0 and peak>=-40.0
