@@ -14,9 +14,11 @@ def inspect(path):
              "-of", "json", str(file)], text=True, timeout=30)
         info = json.loads(raw)
         stream = next(s for s in info.get("streams", []) if s.get("codec_type") == "video")
+        audio_present = any(s.get("codec_type") == "audio" for s in info.get("streams", []))
         num, den = (int(x) for x in stream["r_frame_rate"].split("/"))
         duration = float(info["format"]["duration"])
-        valid = (stream.get("codec_name") == "h264"
+        valid = (audio_present
+                 and stream.get("codec_name") == "h264"
                  and stream.get("pix_fmt") == "yuv420p"
                  and (stream.get("width"), stream.get("height")) == (1080, 1920)
                  and den > 0 and 23 <= num / den <= 60
