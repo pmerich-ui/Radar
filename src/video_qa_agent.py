@@ -1,7 +1,19 @@
-"""Agent 21 technical video QA; no claim of creative or rights approval."""
+"""Technical MP4 QA. Audio presence is not evidence of audible sound."""
 import json
+import re
 import subprocess
 from pathlib import Path
+
+def _audible_audio(path):
+    """Reject silent tracks; a pass is not a subjective listening test."""
+    result = subprocess.run(
+        ["ffmpeg", "-nostdin", "-hide_banner", "-i", str(path),
+         "-map", "0:a:0", "-vn", "-af", "volumedetect", "-f", "null", "-"],
+        capture_output=True, text=True, timeout=60, check=False)
+    if result.returncode != 0:
+        return False
+    match = re.search(r"max_volume:\s*(-?inf|-?\d+(?:\.\d+)?)\s*dB", result.stderr)
+    return bool(match and match.group(1) != "-inf" and float(match.group(1)) > -90)
 
 def inspect(path):
     file = Path(path)
@@ -17,22 +29,25 @@ def inspect(path):
         audio_present = any(s.get("codec_type") == "audio" for s in info.get("streams", []))
         num, den = (int(x) for x in stream["r_frame_rate"].split("/"))
         duration = float(info["format"]["duration"])
-        valid = (audio_present
-                 and stream.get("codec_name") == "h264"
-                 and stream.get("pix_fmt") == "yuv420p"
-                 and (stream.get("width"), stream.get("height")) == (1080, 1920)
-                 and den > 0 and 23 <= num / den <= 60
-                 and 15 <= duration <= 30)
-        return {"status": "TECHNICAL_PASS" if valid else "BLOCKED",
-                "reason": "VIDEO_TECHNICAL_CHECK" if valid else "VIDEO_SPEC_MISMATCH",
+        video_valid = (stream.get("codec_name") == "h264"
+                       and stream.get("pix_fmt") == "yuv420p"
+                       and (stream.get("width"), stream.get("height")) == (1080, 1920)
+                       and den > 0 and 23 <= num / den <= 60
+                       and 15 <= duration <= 30)
+        if not video_valid or not audio_present:
+            return {"status": "BLOCKED", "reason": "VIDEO_SPEC_MISMATCH",
+                    "duration_seconds": duration, "publishable": False}
+        if not _audible_audio(file):
+            return {"status": "BLOCKED", "reason": "AUDIO_SILENT_OR_UNVERIFIED",
+                    "duration_seconds": duration, "publishable": False}
+        return {"status": "TECHNICAL_PASS", "reason": "VIDEO_TECHNICAL_CHECK",
                 "duration_seconds": duration, "publishable": False,
-                "requires": ["visual_review", "rights", "facts", "owner_approval"]}
-    except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError, ZeroDivisionError):
+                "requires": ["visual_review", "listening_review", "rights", "facts", "owner_approval"]}
+    except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError, ZeroDivisionError, OverflowError):
         return {"status": "BLOCKED", "reason": "VIDEO_PROBE_FAILED", "publishable": False}
 
 if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("video")
-    args = p.parse_args()
-    print(json.dumps(inspect(args.video)))
+    print(json.dumps(inspect(p.parse_args().video)))
