@@ -6,6 +6,9 @@ on:
       - 'tests/test_revenue_quality.py'
       - 'daily_report.py'
       - 'tests/test_daily_report.py'
+      - 'src/video_qa_agent.py'
+      - 'src/video_generator_router.py'
+      - 'tests/test_*video*.py'
       - '.github/workflows/quality-gate.yml'
   pull_request:
   workflow_dispatch:
