@@ -42,11 +42,27 @@ jobs:
               try:
                   utc_hour = int(schedule.split()[1])
                   assert schedule.startswith('0 ') and utc_hour in (7, 8, 12, 13, 18, 19)
-                  today_utc = datetime.datetime.now(datetime.timezone.utc).date()
-                  slot_utc = datetime.datetime.combine(today_utc, datetime.time(utc_hour), datetime.timezone.utc)
-                  slot_local = slot_utc.astimezone(ZoneInfo('Europe/Zurich'))
-                  enabled = slot_local.hour in (8, 13, 19)
-                  reason = f'scheduled slot {slot_local.isoformat()}'
+                  # Only accept a recent scheduled slot. A delayed runner may start
+                  # on the next UTC day; never silently reassign it to today's slot.
+                  now_utc = datetime.datetime.now(datetime.timezone.utc)
+                  candidates = [
+                      datetime.datetime.combine(
+                          now_utc.date() - datetime.timedelta(days=days_back),
+                          datetime.time(utc_hour),
+                          datetime.timezone.utc,
+                      )
+                      for days_back in (0, 1)
+                  ]
+                  valid = [
+                      slot for slot in candidates
+                      if 0 <= (now_utc - slot).total_seconds() <= 4 * 3600
+                      and slot.astimezone(ZoneInfo('Europe/Zurich')).hour in (8, 13, 19)
+                  ]
+                  enabled = len(valid) == 1
+                  reason = (
+                      f'scheduled slot {valid[0].astimezone(ZoneInfo("Europe/Zurich")).isoformat()}'
+                      if enabled else 'no unambiguous recent Swiss render slot'
+                  )
               except (ValueError, IndexError, AssertionError) as exc:
                   enabled = False
                   reason = f'invalid schedule: {schedule!r} ({exc})'
