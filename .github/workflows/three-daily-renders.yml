@@ -1,7 +1,12 @@
 name: DealRadar Three Daily Renders
 on:
   schedule:
-    - cron: '0 7,8,12,13,18,19 * * *'
+    - cron: '0 7 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 12 * * *'
+    - cron: '0 13 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -21,15 +26,33 @@ jobs:
         id: gate
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE_EXPRESSION: ${{ github.event.schedule }}
         run: |
           python - <<'PY'
           import datetime, os
           from zoneinfo import ZoneInfo
-          now = datetime.datetime.now(ZoneInfo('Europe/Zurich'))
-          enabled = os.environ['EVENT_NAME'] == 'workflow_dispatch' or (now.hour in (8,13,19) and now.minute < 45)
+          event = os.environ['EVENT_NAME']
+          schedule = os.environ.get('SCHEDULE_EXPRESSION', '')
+          if event == 'workflow_dispatch':
+              enabled = True
+              reason = 'manual dispatch'
+          else:
+              # Use the scheduled UTC slot, not the delayed runner start minute.
+              # Paired UTC cron entries cover both CET and CEST.
+              try:
+                  utc_hour = int(schedule.split()[1])
+                  assert schedule.startswith('0 ') and utc_hour in (7, 8, 12, 13, 18, 19)
+                  today_utc = datetime.datetime.now(datetime.timezone.utc).date()
+                  slot_utc = datetime.datetime.combine(today_utc, datetime.time(utc_hour), datetime.timezone.utc)
+                  slot_local = slot_utc.astimezone(ZoneInfo('Europe/Zurich'))
+                  enabled = slot_local.hour in (8, 13, 19)
+                  reason = f'scheduled slot {slot_local.isoformat()}'
+              except (ValueError, IndexError, AssertionError) as exc:
+                  enabled = False
+                  reason = f'invalid schedule: {schedule!r} ({exc})'
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write('enabled=' + str(enabled).lower() + '\n')
-          print(now.isoformat(), enabled)
+          print(f'RENDER_GATE enabled={enabled} event={event} reason={reason}')
           PY
       - name: Install tools
         if: steps.gate.outputs.enabled == 'true'
