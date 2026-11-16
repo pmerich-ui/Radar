@@ -19,7 +19,7 @@ for item in CATALOG:
 with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=p.parent, prefix=".produced-", suffix=".tmp", delete=False) as tmp:
  tmp_path=Path(tmp.name)
  try:
-  tmp.write(json.dumps(h,indent=2,ensure_ascii=False)+"\\n")
+  tmp.write(json.dumps(h,indent=2,ensure_ascii=False)+"\n")
   tmp.flush()
   os.fsync(tmp.fileno())
  except BaseException:
