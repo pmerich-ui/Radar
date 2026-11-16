@@ -32,5 +32,22 @@ class Analytics24hTests(unittest.TestCase):
             self.assertNotIn('"views": 20', path.read_text())
 
 
+    def test_metadata_only_does_not_finalize(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "snapshots.json"
+            now = self.published + timedelta(days=2)
+            self.assertFalse(record_once(path, "v1", self.published, now, {"TKPO02": "2026-11-15", "TKPO03": "https://example.com", "TKPO06": 18}))
+            self.assertFalse(path.exists())
+
+    def test_invalid_metrics_do_not_finalize_and_zero_is_valid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "snapshots.json"
+            now = self.published + timedelta(days=2)
+            for value in (None, "", "  ", "N/A", "--", float("nan"), float("inf"), True):
+                self.assertFalse(record_once(path, "v1", self.published, now, {"TKPO07": value}))
+            self.assertFalse(path.exists())
+            self.assertTrue(record_once(path, "v1", self.published, now, {"TKPO07": 0}))
+            self.assertFalse(record_once(path, "v1", self.published, now, {"TKPO07": 1}))
+
 if __name__ == "__main__":
     unittest.main()
