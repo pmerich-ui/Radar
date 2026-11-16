@@ -31,6 +31,17 @@ class AnalyticsSafetyRegressionTests(unittest.TestCase):
             self.assertEqual(json.loads(path.read_text(encoding="utf-8")), original)
             self.assertEqual(list(Path(directory).glob(".24h-*.tmp")), [])
 
+    def test_missing_analytics_does_not_consume_snapshot(self):
+        published = datetime(2026, 11, 14, 18, tzinfo=timezone.utc)
+        captured = published + timedelta(days=2)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "24h.json"
+            self.assertFalse(record_once(path, "public-1", published, captured, {}))
+            self.assertFalse(record_once(path, "public-1", published, captured, {"views": None, "reach": None}))
+            self.assertFalse(path.exists())
+            self.assertTrue(record_once(path, "public-1", published, captured, {"views": 0}))
+            self.assertEqual(json.loads(path.read_text())["public-1"]["metrics"]["views"], 0)
+
     def test_repeated_capture_does_not_overwrite_first_snapshot(self):
         published = datetime(2026, 11, 14, 18, tzinfo=timezone.utc)
         captured = published + timedelta(days=2)
