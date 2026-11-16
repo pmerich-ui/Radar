@@ -1,5 +1,6 @@
 """Idempotent 24-hour TikTok snapshot eligibility; no network or publishing side effects."""
 from datetime import timedelta
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -16,9 +17,18 @@ def eligible(video_id, published_at, now, completed):
 
 
 def record_once(path, video_id, published_at, captured_at, metrics):
-    """Persist snapshot atomically; caller must serialize concurrent writers."""
+    """Persist a single snapshot atomically under an interprocess file lock (POSIX)."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    with (path.parent / (path.name + ".lock")).open("a+b") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            return _record_locked(path, video_id, published_at, captured_at, metrics)
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+def _record_locked(path, video_id, published_at, captured_at, metrics):
     snapshots = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     if not eligible(video_id, published_at, captured_at, snapshots):
         return False
