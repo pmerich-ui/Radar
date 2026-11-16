@@ -38,6 +38,7 @@ class AnalyticsSafetyRegressionTests(unittest.TestCase):
             path = Path(directory) / "24h.json"
             self.assertFalse(record_once(path, "public-1", published, captured, {}))
             self.assertFalse(record_once(path, "public-1", published, captured, {"views": None, "reach": None}))
+            self.assertFalse(record_once(path, "public-1", published, captured, {"views": "", "reach": "  "}))
             self.assertFalse(path.exists())
             self.assertTrue(record_once(path, "public-1", published, captured, {"views": 0}))
             self.assertEqual(json.loads(path.read_text())["public-1"]["metrics"]["views"], 0)
