@@ -43,6 +43,16 @@ class AnalyticsSafetyRegressionTests(unittest.TestCase):
             self.assertTrue(record_once(path, "public-1", published, captured, {"views": 0}))
             self.assertEqual(json.loads(path.read_text())["public-1"]["metrics"]["views"], 0)
 
+    def test_provider_placeholders_do_not_finalize_snapshot(self):
+        published = datetime(2026, 11, 14, 18, tzinfo=timezone.utc)
+        captured = published + timedelta(days=2)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "24h.json"
+            for invalid in ("N/A", "--", "null", True, float("nan"), float("inf")):
+                self.assertFalse(record_once(path, "public-1", published, captured, {"TKPO07": invalid}))
+            self.assertFalse(path.exists())
+            self.assertTrue(record_once(path, "public-1", published, captured, {"TKPO07": "0"}))
+
     def test_repeated_capture_does_not_overwrite_first_snapshot(self):
         published = datetime(2026, 11, 14, 18, tzinfo=timezone.utc)
         captured = published + timedelta(days=2)
