@@ -18,7 +18,7 @@ def eligible(video_id, published_at, now, completed):
 
 def record_once(path, video_id, published_at, captured_at, metrics):
     """Persist a single snapshot atomically under an interprocess file lock (POSIX)."""
-    if not isinstance(metrics, dict) or not any(value is not None for value in metrics.values()):
+    if not isinstance(metrics, dict) or not any(value is not None and (not isinstance(value, str) or bool(value.strip())) for value in metrics.values()):
         return False  # No usable analytics: keep eligible for a later retry.
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
