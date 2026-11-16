@@ -2,7 +2,8 @@ name: DealRadar Quality Gate
 on:
   push:
     paths:
-      - 'src/revenue_quality.py'
+      - 'src/**'
+      - 'tests/test_v5_*.py'
       - 'tests/test_revenue_quality.py'
       - 'daily_report.py'
       - 'tests/test_daily_report.py'
@@ -24,5 +25,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_revenue_quality.py' -v
           python -m unittest discover -s tests -p 'test_daily_report.py' -v
+      - name: Run V5 production safety regression tests
+        run: python -m unittest discover -s tests -p 'test_v5_*.py' -v
       - name: Check Python syntax
-        run: python -m compileall -q src/revenue_quality.py daily_report.py
+        run: python -m compileall -q src tests daily_report.py
