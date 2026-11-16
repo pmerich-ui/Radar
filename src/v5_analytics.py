@@ -23,9 +23,18 @@ def record_once(path, video_id, published_at, captured_at, metrics):
     performance_keys = {"TKPO07", "TKPO08", "TKPO09", "TKPO10", "TKPO11", "TKPO13", "TKPO15",
                         "views", "likes", "comments", "shares", "reach",
                         "fullVideoWatchedRate", "averageTimeWatched"}
+    def is_measurement(value):
+        # Reject booleans, NaN, infinity, and provider placeholders (e.g. "N/A").
+        import math
+        if isinstance(value, bool):
+            return False
+        try:
+            return math.isfinite(float(value)) if value is not None else False
+        except (TypeError, ValueError, OverflowError):
+            return False
+
     if not isinstance(metrics, dict) or not any(
-        key in performance_keys and value is not None
-        and (not isinstance(value, str) or bool(value.strip()))
+        key in performance_keys and is_measurement(value)
         for key, value in metrics.items()
     ):
         return False  # No actual performance data: retry later.
