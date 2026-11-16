@@ -18,8 +18,17 @@ def eligible(video_id, published_at, now, completed):
 
 def record_once(path, video_id, published_at, captured_at, metrics):
     """Persist a single snapshot atomically under an interprocess file lock (POSIX)."""
-    if not isinstance(metrics, dict) or not any(value is not None and (not isinstance(value, str) or bool(value.strip())) for value in metrics.values()):
-        return False  # No usable analytics: keep eligible for a later retry.
+    # Metadata (publication time, URL, duration) is not a performance measurement.
+    # A real zero is valid; null, empty strings and whitespace are not.
+    performance_keys = {"TKPO07", "TKPO08", "TKPO09", "TKPO10", "TKPO11", "TKPO13", "TKPO15",
+                        "views", "likes", "comments", "shares", "reach",
+                        "fullVideoWatchedRate", "averageTimeWatched"}
+    if not isinstance(metrics, dict) or not any(
+        key in performance_keys and value is not None
+        and (not isinstance(value, str) or bool(value.strip()))
+        for key, value in metrics.items()
+    ):
+        return False  # No actual performance data: retry later.
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with (path.parent / (path.name + ".lock")).open("a+b") as lock:
