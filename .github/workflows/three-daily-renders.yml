@@ -113,6 +113,45 @@ jobs:
         env:
           BATCH_SIZE: '1'
         run: python -m src.batch
+      - name: Verify actual rendered MP4 evidence (report only)
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import subprocess
+          output = pathlib.Path('output')
+          files = sorted(output.rglob('*.mp4')) if output.exists() else []
+          lines = ['### Render evidence (not publication or creative QA)']
+          if not files:
+              lines.append('RENDER_STATUS=NO_MP4 — no rendered MP4 found')
+          for file in files:
+              try:
+                  proc = subprocess.run(
+                      ['ffprobe', '-v', 'error', '-show_entries',
+                       'format=duration:stream=codec_type,width,height',
+                       '-of', 'json', str(file)],
+                      check=True, capture_output=True, text=True, timeout=30)
+                  data = json.loads(proc.stdout)
+                  streams = data.get('streams', [])
+                  video = next((s for s in streams if s.get('codec_type') == 'video'), {})
+                  audio = any(s.get('codec_type') == 'audio' for s in streams)
+                  width, height = video.get('width', 0), video.get('height', 0)
+                  duration = float(data.get('format', {}).get('duration', 0))
+                  valid = bool(width and height and duration > 0)
+                  lines.append(
+                      f"RENDER_STATUS={'MP4_PROBED' if valid else 'INVALID_MP4'} "
+                      f"path={file} dimensions={width}x{height} "
+                      f"duration={duration:.2f}s audio_stream={audio} "
+                      "(photorealism, audio audibility, rights and QA >=85 NOT verified)"
+                  )
+              except (subprocess.SubprocessError, ValueError, OSError, json.JSONDecodeError) as exc:
+                  lines.append(f'RENDER_STATUS=PROBE_FAILED path={file} error={type(exc).__name__}')
+          summary = '\\n'.join(lines) + '\\n'
+          print(summary)
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
+              handle.write(summary)
+          PY
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
         run: python -m src.readiness_audit
