@@ -55,6 +55,32 @@ class ProductionLedgerTests(unittest.TestCase):
         self.assertFalse(self.advance("PUBLISHED_VERIFIED"))
         self.assertEqual(status(self.db, "job-1")["version"], 12)
 
+    def test_no_retry_after_upload_started(self):
+        for state in ("SCRIPT_READY", "GENERATOR_SELECTED", "RENDERING"):
+            self.advance(state)
+        mp4 = Path(self.temp.name) / "video.mp4"
+        mp4.write_bytes(b"ledger fixture only")
+        digest = hashlib.sha256(mp4.read_bytes()).hexdigest()
+        self.advance("RENDERED", {"mp4_path": str(mp4), "sha256": digest})
+        self.advance("TECHNICAL_QA_PASSED", {"technical_pass": True})
+        self.advance("CREATIVE_QA_PASSED", {"score": 85, "reviewer": "qa"})
+        self.advance("RIGHTS_VERIFIED", {"commercial_rights": True, "license_reference": "test"})
+        self.advance("AWAITING_USER_APPROVAL")
+        self.advance("USER_APPROVED", {"approved_sha256": digest, "approval_reference": "test"})
+        self.advance("UPLOAD_STARTED")
+        with self.assertRaisesRegex(ValueError, "Upload outcome uncertain"):
+            self.advance("FAILED_RETRYABLE")
+        self.assertEqual(status(self.db, "job-1")["state"], "UPLOAD_STARTED")
+
+    def test_retry_budget_is_bounded(self):
+        self.advance("SCRIPT_READY")
+        for _ in range(3):
+            self.advance("FAILED_RETRYABLE", {"reason": "transient generator failure"})
+            self.advance("GENERATOR_SELECTED")
+        with self.assertRaisesRegex(ValueError, "Retry budget exhausted"):
+            self.advance("FAILED_RETRYABLE")
+        self.assertEqual(status(self.db, "job-1")["state"], "GENERATOR_SELECTED")
+
     def test_restart_and_retry(self):
         self.advance("SCRIPT_READY")
         self.db.close()
