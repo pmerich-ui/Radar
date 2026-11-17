@@ -147,7 +147,7 @@ jobs:
                   )
               except (subprocess.SubprocessError, ValueError, OSError, json.JSONDecodeError) as exc:
                   lines.append(f'RENDER_STATUS=PROBE_FAILED path={file} error={type(exc).__name__}')
-          summary = '\\n'.join(lines) + '\\n'
+          summary = chr(10).join(lines) + chr(10)
           print(summary)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
               handle.write(summary)
