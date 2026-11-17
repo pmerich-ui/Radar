@@ -141,14 +141,14 @@ jobs:
                   audio = any(s.get('codec_type') == 'audio' for s in streams)
                   width, height = video.get('width', 0), video.get('height', 0)
                   duration = float(data.get('format', {}).get('duration', 0))
-                  valid = bool(width and height and duration > 0)
+                  valid = bool(width == 1080 and height == 1920 and 15 <= duration <= 20 and audio)
                   if not valid:
                       failures.append(f'INVALID_MP4:{file}')
                   lines.append(
                       f"RENDER_STATUS={'MP4_PROBED' if valid else 'INVALID_MP4'} "
                       f"path={file} dimensions={width}x{height} "
                       f"duration={duration:.2f}s audio_stream={audio} "
-                      "(photorealism, audio audibility, rights and QA >=85 NOT verified)"
+                      "(technical gate: 1080x1920, 15-20s, audio stream; photorealism, audibility, rights and QA >=85 NOT verified)"
                   )
               except (subprocess.SubprocessError, ValueError, OSError, json.JSONDecodeError) as exc:
                   lines.append(f'RENDER_STATUS=PROBE_FAILED path={file} error={type(exc).__name__}')
