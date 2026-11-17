@@ -1,7 +1,12 @@
 name: DealRadar Three Daily Renders
 on:
   schedule:
-    - cron: '0 7,8,12,13,18,19 * * *'
+    - cron: '0 7 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 12 * * *'
+    - cron: '0 13 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -21,16 +26,63 @@ jobs:
         id: gate
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE_EXPRESSION: ${{ github.event.schedule }}
         run: |
           python - <<'PY'
           import datetime, os
           from zoneinfo import ZoneInfo
-          now = datetime.datetime.now(ZoneInfo('Europe/Zurich'))
-          enabled = os.environ['EVENT_NAME'] == 'workflow_dispatch' or (now.hour in (8,13,19) and now.minute < 45)
+          event = os.environ['EVENT_NAME']
+          schedule = os.environ.get('SCHEDULE_EXPRESSION', '')
+          if event == 'workflow_dispatch':
+              enabled = True
+              reason = 'manual dispatch'
+          else:
+              # Use the scheduled UTC slot, not the delayed runner start minute.
+              # Paired UTC cron entries cover both CET and CEST.
+              try:
+                  utc_hour = int(schedule.split()[1])
+                  assert schedule.startswith('0 ') and utc_hour in (7, 8, 12, 13, 18, 19)
+                  # Only accept a recent scheduled slot. A delayed runner may start
+                  # on the next UTC day; never silently reassign it to today's slot.
+                  now_utc = datetime.datetime.now(datetime.timezone.utc)
+                  candidates = [
+                      datetime.datetime.combine(
+                          now_utc.date() - datetime.timedelta(days=days_back),
+                          datetime.time(utc_hour),
+                          datetime.timezone.utc,
+                      )
+                      for days_back in (0, 1)
+                  ]
+                  valid = [
+                      slot for slot in candidates
+                      if 0 <= (now_utc - slot).total_seconds() <= 4 * 3600
+                      and slot.astimezone(ZoneInfo('Europe/Zurich')).hour in (8, 13, 19)
+                  ]
+                  enabled = len(valid) == 1
+                  reason = (
+                      f'scheduled slot {valid[0].astimezone(ZoneInfo("Europe/Zurich")).isoformat()}'
+                      if enabled else 'no unambiguous recent Swiss render slot'
+                  )
+              except (ValueError, IndexError, AssertionError) as exc:
+                  enabled = False
+                  reason = f'invalid schedule: {schedule!r} ({exc})'
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write('enabled=' + str(enabled).lower() + '\n')
-          print(now.isoformat(), enabled)
+          print(f'RENDER_GATE enabled={enabled} event={event} reason={reason}')
           PY
+      - name: Report render gate outcome explicitly
+        if: always()
+        env:
+          GATE_ENABLED: ${{ steps.gate.outputs.enabled }}
+        run: |
+          if [ "$GATE_ENABLED" = "true" ]; then
+            echo "RENDER_GATE=ENABLED; rendering and QA have NOT yet been verified"
+            echo "### Render gate: ENABLED (not a production success)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "RENDER_GATE=SKIPPED; no MP4 or QA evidence produced by this run"
+            echo "### Render gate: SKIPPED — no video produced" >> "$GITHUB_STEP_SUMMARY"
+            echo "A green workflow conclusion does not imply rendering, QA approval, or publication." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Install tools
         if: steps.gate.outputs.enabled == 'true'
         run: |
@@ -61,11 +113,77 @@ jobs:
         env:
           BATCH_SIZE: '1'
         run: python -m src.batch
+      - name: Verify actual rendered MP4 evidence (fail closed)
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import subprocess
+          import sys
+          output = pathlib.Path('output')
+          files = sorted(output.rglob('*.mp4')) if output.exists() else []
+          lines = ['### Render evidence (not publication or creative QA)']
+          failures = []
+          if not files:
+              lines.append('RENDER_STATUS=NO_MP4 — no rendered MP4 found')
+              failures.append('NO_MP4')
+          for file in files:
+              try:
+                  proc = subprocess.run(
+                      ['ffprobe', '-v', 'error', '-show_entries',
+                       'format=duration:stream=codec_type,width,height',
+                       '-of', 'json', str(file)],
+                      check=True, capture_output=True, text=True, timeout=30)
+                  data = json.loads(proc.stdout)
+                  streams = data.get('streams', [])
+                  video = next((s for s in streams if s.get('codec_type') == 'video'), {})
+                  audio = any(s.get('codec_type') == 'audio' for s in streams)
+                  width, height = video.get('width', 0), video.get('height', 0)
+                  duration = float(data.get('format', {}).get('duration', 0))
+                  valid = bool(width == 1080 and height == 1920 and 15 <= duration <= 20 and audio)
+                  if not valid:
+                      failures.append(f'INVALID_MP4:{file}')
+                  lines.append(
+                      f"RENDER_STATUS={'MP4_PROBED' if valid else 'INVALID_MP4'} "
+                      f"path={file} dimensions={width}x{height} "
+                      f"duration={duration:.2f}s audio_stream={audio} "
+                      "(technical gate: 1080x1920, 15-20s, audio stream; photorealism, audibility, rights and QA >=85 NOT verified)"
+                  )
+              except (subprocess.SubprocessError, ValueError, OSError, json.JSONDecodeError) as exc:
+                  lines.append(f'RENDER_STATUS=PROBE_FAILED path={file} error={type(exc).__name__}')
+                  failures.append(f'PROBE_FAILED:{file}')
+          summary = chr(10).join(lines) + chr(10)
+          print(summary)
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
+              handle.write(summary)
+          if failures:
+              print('Render verification failed:', ', '.join(failures), file=sys.stderr)
+              sys.exit(1)
+          PY
+      - name: Enforce creative and rights readiness (fail closed)
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = Path('output/report.json')
+          if not report.is_file():
+              raise SystemExit('PRODUCTION_NOT_YET_VERIFIED: missing render report')
+          data = json.loads(report.read_text(encoding='utf-8'))
+          count = data.get('v5_publishable')
+          if type(count) is not int or count < 1:
+              reason = data.get('reason', 'no verified V5-ready video')
+              with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+                  out.write(f'### V5 creative/rights gate: BLOCKED\\n{reason}\\n')
+              raise SystemExit(f'PRODUCTION_NOT_YET_VERIFIED: {reason}')
+          print('V5 report claims readiness; separate rights and user approval remain mandatory')
+          PY
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
         run: python -m src.readiness_audit
-      - name: Store private render artifact
-        if: steps.gate.outputs.enabled == 'true'
+      - name: Store private render artifact (including failed QA for diagnosis)
+        if: always() && steps.gate.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: dealradar-render-${{ github.run_id }}
