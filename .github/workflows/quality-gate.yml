@@ -4,6 +4,7 @@ on:
     paths:
       - 'src/**'
       - 'tests/test_v5_*.py'
+      - 'tests/test_marketing_studio.py'
       - 'tests/test_revenue_quality.py'
       - 'daily_report.py'
       - 'tests/test_daily_report.py'
@@ -29,5 +30,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_daily_report.py' -v
       - name: Run V5 production safety regression tests
         run: python -m unittest discover -s tests -p 'test_v5_*.py' -v
+      - name: Run media QA regression tests
+        run: python -m unittest discover -s tests -p 'test_marketing_studio.py' -v
       - name: Check Python syntax
         run: python -m compileall -q src tests daily_report.py
