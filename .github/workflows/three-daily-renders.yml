@@ -164,8 +164,8 @@ jobs:
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
         run: python -m src.readiness_audit
-      - name: Store private render artifact
-        if: steps.gate.outputs.enabled == 'true'
+      - name: Store private render artifact (including failed QA for diagnosis)
+        if: always() && steps.gate.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: dealradar-render-${{ github.run_id }}
