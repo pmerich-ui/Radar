@@ -161,6 +161,24 @@ jobs:
               print('Render verification failed:', ', '.join(failures), file=sys.stderr)
               sys.exit(1)
           PY
+      - name: Enforce creative and rights readiness (fail closed)
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = Path('output/report.json')
+          if not report.is_file():
+              raise SystemExit('PRODUCTION_NOT_YET_VERIFIED: missing render report')
+          data = json.loads(report.read_text(encoding='utf-8'))
+          count = data.get('v5_publishable')
+          if type(count) is not int or count < 1:
+              reason = data.get('reason', 'no verified V5-ready video')
+              with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+                  out.write(f'### V5 creative/rights gate: BLOCKED\\n{reason}\\n')
+              raise SystemExit(f'PRODUCTION_NOT_YET_VERIFIED: {reason}')
+          print('V5 report claims readiness; separate rights and user approval remain mandatory')
+          PY
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
         run: python -m src.readiness_audit
