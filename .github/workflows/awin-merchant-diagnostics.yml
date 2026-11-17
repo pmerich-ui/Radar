@@ -1,0 +1,66 @@
+name: Awin merchant metadata diagnostics
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  merchant-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect joined programme names and field availability
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, html, json, os, re, sys, urllib.request, urllib.error
+          token=os.getenv("AWIN_API_TOKEN","").strip()
+          if not token:
+              print("BLOCKED: TOKEN_MISSING"); sys.exit(1)
+          def get(url):
+              req=urllib.request.Request(url,headers={"Authorization":"Bearer "+token,"Accept":"application/json"},method="GET")
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as response: return json.load(response)
+              except urllib.error.HTTPError as e:
+                  print("BLOCKED: AWIN_HTTP_"+str(e.code)); sys.exit(1)
+              except Exception as e:
+                  print("BLOCKED: REQUEST_"+type(e).__name__); sys.exit(1)
+          accounts=get("https://api.awin.com/accounts?type=publisher")
+          if isinstance(accounts,dict): accounts=accounts.get("accounts")
+          pubs=[a for a in accounts if isinstance(a,dict) and a.get("accountType")=="publisher" and str(a.get("accountId","")).isdigit()] if isinstance(accounts,list) else []
+          if len(pubs)!=1: print("BLOCKED: EXPECTED_ONE_PUBLISHER"); sys.exit(1)
+          data=get("https://api.awin.com/publishers/"+str(pubs[0]["accountId"])+"/programmes?relationship=joined")
+          if isinstance(data,dict): data=data.get("programmes")
+          if not isinstance(data,list) or not all(isinstance(p,dict) for p in data):
+              print("BLOCKED: BAD_PROGRAMMES_RESPONSE"); sys.exit(1)
+          def scalar(p,keys):
+              for k in keys:
+                  v=p.get(k)
+                  if isinstance(v,(str,int,float)) and str(v).strip(): return str(v).strip()
+              return ""
+          def safe(s):
+              return html.escape(re.sub(r"[\\r\\n\\t]"," ",s)[:120],quote=True).replace("|","&#124;")
+          keys=sorted({k for p in data for k in p.keys() if re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,55}",k)})
+          lines=["## Awin merchant diagnostics","",f"Joined programmes: **{len(data)}**","",
+                 "Original names shown in code formatting; Base64 UTF-8 column is resistant to browser translation.",
+                 "Advertiser IDs refer to merchants, not the publisher account.","",
+                 "| Advertiser ID | Original name | UTF-8 Base64 name |",
+                 "|---|---|---|"]
+          rows=[]
+          for p in data:
+              merchant_id=scalar(p,("advertiserId","programmeId","programId","id"))
+              name=scalar(p,("advertiserName","programmeName","programName","name"))
+              rows.append((merchant_id,name))
+          for merchant_id,name in sorted(rows,key=lambda x:x[1].casefold()):
+              encoded=base64.b64encode(name.encode("utf-8")).decode("ascii")
+              lines.append("| "+safe(merchant_id or "unknown")+" | `"+safe(name or "missing")+"` | `"+encoded+"` |")
+          lines+=["","### Available top-level field names","",
+                  "`, `".join(["`"+k for k in keys])+"`" if keys else "none",
+                  "","This is field discovery only; Swiss shipping, commission rates, feeds and links are NOT verified."]
+          if os.getenv("GITHUB_STEP_SUMMARY"):
+              with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+                  f.write("\n".join(lines)+"\n")
+          print("AWIN_MERCHANT_DIAGNOSTICS_OK; records:",len(data))
+          print("NO_PUBLISHER_ID_OR_TOKEN_LOGGED; NO_PUBLICATION")
+          PY
