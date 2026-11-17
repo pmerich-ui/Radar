@@ -31,6 +31,11 @@ def connect(path):
         created_at TEXT NOT NULL)""")
     return db
 
+def close(db):
+    """Explicitly release database resources after each job."""
+    db.close()
+
+
 def now():
     return datetime.now(timezone.utc).isoformat()
 
