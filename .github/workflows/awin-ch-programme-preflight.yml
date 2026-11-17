@@ -1,0 +1,64 @@
+name: Awin CH programme preflight
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ch-programme-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect CH programmes 13876 and 16547 without publishing
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html, json, os, re, sys, urllib.error, urllib.request
+          from urllib.parse import urlsplit
+          token=os.environ.get("AWIN_API_TOKEN","").strip()
+          if not token: print("BLOCKED: TOKEN_MISSING"); sys.exit(1)
+          def get(url):
+              req=urllib.request.Request(url,method="GET",headers={"Authorization":"Bearer "+token,"Accept":"application/json"})
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as response: return json.load(response)
+              except urllib.error.HTTPError as e:
+                  print("BLOCKED: AWIN_HTTP_"+str(e.code)); sys.exit(1)
+              except Exception as e:
+                  print("BLOCKED: REQUEST_"+type(e).__name__); sys.exit(1)
+          accounts=get("https://api.awin.com/accounts?type=publisher")
+          if isinstance(accounts,dict): accounts=accounts.get("accounts")
+          publishers=[a for a in accounts if isinstance(a,dict) and a.get("accountType")=="publisher" and str(a.get("accountId","")).isdigit()] if isinstance(accounts,list) else []
+          if len(publishers)!=1: print("BLOCKED: EXPECTED_ONE_PUBLISHER"); sys.exit(1)
+          data=get("https://api.awin.com/publishers/"+str(publishers[0]["accountId"])+"/programmes?relationship=joined")
+          if isinstance(data,dict): data=data.get("programmes")
+          if not isinstance(data,list) or not all(isinstance(p,dict) for p in data):
+              print("BLOCKED: BAD_PROGRAMMES_RESPONSE"); sys.exit(1)
+          def clean(value):
+              return html.escape(re.sub(r"[\\r\\n\\t|]"," ",str(value or ""))[:90],quote=True)
+          def value(p,key):
+              v=p.get(key)
+              return v if isinstance(v,(str,int,float,bool)) else None
+          targets={"13876","16547"}
+          selected=[p for p in data if str(p.get("id","")) in targets]
+          if len(selected)!=2 or {str(p["id"]) for p in selected}!=targets:
+              print("BLOCKED: CH_TARGETS_NOT_BOTH_JOINED"); sys.exit(1)
+          lines=["## Awin CH programme preflight","",
+                 "Joined programmes checked: advertiser IDs 13876 and 16547. This is metadata only.","",
+                 "| Advertiser ID | Name | Region | Currency | Status | Link field | Link status |",
+                 "|---|---|---|---|---|---|---|"]
+          for p in sorted(selected,key=lambda p:str(p["id"])):
+              raw=value(p,"clickThroughUrl")
+              link="HTTPS syntax" if isinstance(raw,str) and urlsplit(raw).scheme=="https" and urlsplit(raw).hostname else "Missing / unverified"
+              lines.append("| "+" | ".join(clean(x) for x in (p["id"],value(p,"name"),value(p,"primaryRegion"),value(p,"currencyCode"),value(p,"status"),link,value(p,"linkStatus")))+" |")
+          lines+=["","### Field availability (not evidence of eligibility)","",
+                  "| Field | 13876 | 16547 |","|---|---|---|"]
+          for key in ("description","validDomains","displayUrl","clickThroughUrl","linkStatus","primarySector"):
+              lines.append("| "+key+" | "+" | ".join("present" if p.get(key) not in (None,"",[]) else "missing" for p in sorted(selected,key=lambda p:str(p["id"])))+" |")
+          lines+=["","**NOT VERIFIED:** commission rates, cookie duration, merchant advertising rules, feed entitlement, product prices, Swiss delivery, click-through redirect, conversion attribution.",
+                  "No outgoing URLs opened or printed. No affiliate links created. No publication."]
+          if os.getenv("GITHUB_STEP_SUMMARY"):
+              with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f: f.write("\n".join(lines)+"\n")
+          print("AWIN_CH_PREFLIGHT_OK; joined targets: 2")
+          print("COMMISSIONS_NOT_VERIFIED; FEEDS_NOT_VERIFIED; LINKS_NOT_VERIFIED; NO_PUBLICATION")
+          PY
