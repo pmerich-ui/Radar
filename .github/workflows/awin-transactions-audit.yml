@@ -1,0 +1,83 @@
+name: Awin transactions read-only audit
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-transactions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check Awin transactions from the last 90 days
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import collections, datetime as dt, decimal, json, os, sys, urllib.error, urllib.parse, urllib.request
+          token=os.getenv("AWIN_API_TOKEN","").strip()
+          if not token: print("BLOCKED: AWIN_API_TOKEN_MISSING"); sys.exit(1)
+          def get(url):
+              req=urllib.request.Request(url,headers={"Authorization":"Bearer "+token,"Accept":"application/json"},method="GET")
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as resp: return json.load(resp)
+              except urllib.error.HTTPError as exc:
+                  print("BLOCKED: AWIN_HTTP_"+str(exc.code)); sys.exit(1)
+              except Exception as exc:
+                  print("BLOCKED: AWIN_REQUEST_"+type(exc).__name__); sys.exit(1)
+          accounts=get("https://api.awin.com/accounts?type=publisher")
+          if isinstance(accounts,dict): accounts=accounts.get("accounts")
+          pubs=[a for a in accounts if isinstance(a,dict) and a.get("accountType")=="publisher" and str(a.get("accountId","")).isdigit()] if isinstance(accounts,list) else []
+          if len(pubs)!=1: print("BLOCKED: EXPECTED_EXACTLY_ONE_PUBLISHER"); sys.exit(1)
+          pid=str(pubs[0]["accountId"])
+          end=dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
+          start=end-dt.timedelta(days=90)
+          totals=collections.defaultdict(lambda:{"count":0,"amount":decimal.Decimal("0")})
+          seen=set()
+          for index in range(3):
+              left=start+dt.timedelta(days=30*index)
+              right=min(left+dt.timedelta(days=30),end)
+              params=urllib.parse.urlencode({"startDate":left.strftime("%Y-%m-%dT%H:%M:%S"),
+                  "endDate":right.strftime("%Y-%m-%dT%H:%M:%S"),"timezone":"UTC","dateType":"transaction"})
+              url="https://api.awin.com/publishers/"+pid+"/transactions/?"+params
+              data=get(url)
+              if not isinstance(data,list) or not all(isinstance(x,dict) for x in data):
+                  print("BLOCKED: UNEXPECTED_TRANSACTIONS_RESPONSE"); sys.exit(1)
+              for row in data:
+                  tid=row.get("id")
+                  if not isinstance(tid,(int,str)) or not str(tid).isdigit():
+                      print("BLOCKED: TRANSACTION_ID_MISSING"); sys.exit(1)
+                  if str(tid) in seen: continue
+                  seen.add(str(tid))
+                  amount=row.get("commissionAmount")
+                  status=str(row.get("commissionStatus","")).lower()
+                  if not isinstance(amount,dict) or status not in ("pending","approved","declined","deleted"):
+                      print("BLOCKED: UNEXPECTED_COMMISSION_RECORD"); sys.exit(1)
+                  currency=str(amount.get("currency","")).upper()
+                  if len(currency)!=3 or not currency.isalpha():
+                      print("BLOCKED: INVALID_CURRENCY"); sys.exit(1)
+                  try: value=decimal.Decimal(str(amount["amount"]))
+                  except (KeyError,decimal.InvalidOperation):
+                      print("BLOCKED: INVALID_COMMISSION_AMOUNT"); sys.exit(1)
+                  if not value.is_finite():
+                      print("BLOCKED: NONFINITE_COMMISSION"); sys.exit(1)
+                  bucket=totals[(currency,status)]
+                  bucket["count"]+=1
+                  bucket["amount"]+=value
+          lines=["## Awin transaction audit (read-only)","",
+                 "Window (UTC): "+start.isoformat()+" to "+end.isoformat(),
+                 "Transactions found: **"+str(len(seen))+"**","",
+                 "| Currency | Awin status | Transactions | Commission amount |",
+                 "|---|---|---:|---:|"]
+          for (currency,status),v in sorted(totals.items()):
+              lines.append("| "+currency+" | "+status+" | "+str(v["count"])+" | "+format(v["amount"],".2f")+" |")
+          if not totals: lines.append("| — | No transactions in checked 90-day period | 0 | — |")
+          lines+=["","**Approved** is not the same as **paid out**. This report is not a full account balance or payout reconciliation.",
+                  "No FX conversion. No transaction IDs, order references, clickrefs or tokens are logged.",
+                  "No changes to Awin, no publishing."]
+          summary=os.getenv("GITHUB_STEP_SUMMARY")
+          if summary:
+              with open(summary,"a",encoding="utf-8") as out: out.write("\n".join(lines)+"\n")
+          print("AWIN_TRANSACTIONS_AUDIT_OK; records:",len(seen))
+          print("PERIOD_LAST_90_DAYS; PAYOUTS_NOT_VERIFIED; NO_PUBLICATION")
+          PY
