@@ -31,6 +31,18 @@ jobs:
               f.write('enabled=' + str(enabled).lower() + '\n')
           print(now.isoformat(), enabled)
           PY
+      - name: Record schedule decision in job summary
+        if: always()
+        env:
+          RENDER_GATE_ENABLED: ${{ steps.gate.outputs.enabled }}
+        run: |
+          if [ "$RENDER_GATE_ENABLED" = "true" ]; then
+            echo "### Render window enabled — actual media creation not yet verified" >> "$GITHUB_STEP_SUMMARY"
+            echo "RENDER_GATE=ENABLED; not proof of an MP4 or publication"
+          else
+            echo "### SKIPPED_NO_RENDER — no media created by this run" >> "$GITHUB_STEP_SUMMARY"
+            echo "RENDER_GATE=SKIPPED_NO_RENDER; workflow success is not video success"
+          fi
       - name: Install tools
         if: steps.gate.outputs.enabled == 'true'
         run: |
