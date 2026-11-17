@@ -19,13 +19,23 @@ def inspect_video(path: Path) -> dict:
         checks = {
             "resolution_1080x1920": (video["width"], video["height"]) == (1080, 1920),
             "fps_30": d != 0 and abs(n / d - 30) < 0.01,
-            "duration_15_to_30": 15 <= duration <= 30,
+            "duration_15_to_20": 15 <= duration <= 20,
             "video_h264": video.get("codec_name") == "h264",
             "audio_aac": audio,
             "nonempty_file": path.stat().st_size > 10000,
         }
         decode = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path), "-map", "0:v:0", "-f", "null", "-"], capture_output=True, text=True, timeout=180)
         checks["full_decode"] = decode.returncode == 0
+        # A stream can be silent; verify measurable peak amplitude.
+        volume = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+             "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"],
+            capture_output=True, text=True, timeout=180
+        )
+        import re
+        match = re.search(r"max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB", volume.stderr)
+        peak = float(match.group(1)) if match else float("-inf")
+        checks["audio_peak_above_minus_35_dbfs"] = volume.returncode == 0 and peak > -35
         return {"file": str(path), "checks": checks, "technical_premium_pass": all(checks.values())}
     except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError, subprocess.TimeoutExpired) as exc:
         return {"file": str(path), "technical_premium_pass": False, "error": type(exc).__name__}
