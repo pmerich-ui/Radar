@@ -1,0 +1,70 @@
+name: Awin Swiss merchant shortlist
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  swiss-shortlist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Summarize joined merchant region, sector and link metadata
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html, json, os, re, sys, urllib.request, urllib.error
+          from urllib.parse import urlsplit
+          token=os.getenv("AWIN_API_TOKEN","").strip()
+          if not token: print("BLOCKED: TOKEN_MISSING"); sys.exit(1)
+          def get(url):
+              req=urllib.request.Request(url,headers={"Authorization":"Bearer "+token,"Accept":"application/json"},method="GET")
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as response: return json.load(response)
+              except urllib.error.HTTPError as e:
+                  print("BLOCKED: HTTP_"+str(e.code)); sys.exit(1)
+              except Exception as e:
+                  print("BLOCKED: REQUEST_"+type(e).__name__); sys.exit(1)
+          accounts=get("https://api.awin.com/accounts?type=publisher")
+          if isinstance(accounts,dict): accounts=accounts.get("accounts")
+          pubs=[a for a in accounts if isinstance(a,dict) and a.get("accountType")=="publisher" and str(a.get("accountId","")).isdigit()] if isinstance(accounts,list) else []
+          if len(pubs)!=1: print("BLOCKED: EXPECTED_ONE_PUBLISHER"); sys.exit(1)
+          data=get("https://api.awin.com/publishers/"+str(pubs[0]["accountId"])+"/programmes?relationship=joined")
+          if isinstance(data,dict): data=data.get("programmes")
+          if not isinstance(data,list) or not all(isinstance(p,dict) for p in data):
+              print("BLOCKED: BAD_RESPONSE"); sys.exit(1)
+          def field(p,k):
+              v=p.get(k)
+              if isinstance(v,(str,int,float)): return str(v).strip()
+              if isinstance(v,dict): return str(v.get("name") or v.get("code") or "")
+              return ""
+          def clean(s):
+              return html.escape(re.sub(r"[\\r\\n\\t]"," ",s)[:100]).replace("|","&#124;")
+          rows=[]
+          for p in data:
+              name=field(p,"name") or field(p,"advertiserName")
+              mid=field(p,"id") or field(p,"advertiserId")
+              region=field(p,"primaryRegion")
+              currency=field(p,"currencyCode")
+              sector=field(p,"primarySector")
+              status=field(p,"status")
+              link=field(p,"clickThroughUrl")
+              link_shape="HTTPS" if urlsplit(link).scheme=="https" and urlsplit(link).hostname else ("MISSING" if not link else "UNVERIFIED")
+              # Region and clickThroughUrl are not shipping or affiliate conversion proofs.
+              priority=0 if region.upper() in ("CH","CHE","SWITZERLAND","SCHWEIZ") else 1
+              rows.append((priority,name,mid,region,currency,sector,status,link_shape))
+          rows.sort(key=lambda r:(r[0],r[1].casefold()))
+          lines=["## Awin Swiss candidate metadata","",
+                 f"Joined records: **{len(rows)}**. Region CH is a prioritization hint, not proof of delivery.","",
+                 "| Händler | Advertiser ID | Region | Währung | Sektor | Status | clickThroughUrl Form |",
+                 "|---|---|---|---|---|---|---|"]
+          for _,name,mid,region,currency,sector,status,link in rows:
+              lines.append("| "+" | ".join(clean(x or "—") for x in (name,mid,region,currency,sector,status,link))+" |")
+          lines+=["","**Unverified:** Swiss shipping, commission rules, product feeds, prices, deep links and attribution.",
+                  "No outbound URLs printed or opened; no publication."]
+          if os.getenv("GITHUB_STEP_SUMMARY"):
+              with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f: f.write("\n".join(lines)+"\n")
+          print("AWIN_SWISS_SHORTLIST_OK; records:",len(rows))
+          print("NO_LINK_VALIDATION; NO_COMMISSIONS; NO_PUBLICATION")
+          PY
