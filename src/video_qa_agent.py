@@ -45,7 +45,7 @@ def inspect(path):
         if volume.returncode:
             return {"status": "BLOCKED", "reason": "AUDIO_ANALYSIS_FAILED",
                     "publishable": False}
-        matches = re.findall(r"max_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf)) dB", volume.stderr)
+        matches = re.findall(r"max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf)) dB", volume.stderr)
         peak = float(matches[-1]) if matches else float("-inf")
         if not math.isfinite(peak) or peak < -45:
             return {"status": "BLOCKED", "reason": "AUDIO_SILENT_OR_TOO_QUIET",
