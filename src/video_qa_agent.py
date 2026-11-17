@@ -31,7 +31,7 @@ def inspect(path):
                                      "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"],
                                     check=True, capture_output=True, text=True, timeout=120)
             import re
-            match = re.search(r"max_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf)) dB", volume.stderr)
+            match = re.search(r"max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf)) dB", volume.stderr)
             if not match or match.group(1) == "-inf" or float(match.group(1)) < -50:
                 return {"status": "BLOCKED", "reason": "AUDIO_SILENT_OR_UNVERIFIED", "publishable": False}
         return {"status": "TECHNICAL_PASS" if valid else "BLOCKED",
