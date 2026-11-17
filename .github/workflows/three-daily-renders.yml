@@ -70,6 +70,19 @@ jobs:
               f.write('enabled=' + str(enabled).lower() + '\n')
           print(f'RENDER_GATE enabled={enabled} event={event} reason={reason}')
           PY
+      - name: Report render gate outcome explicitly
+        if: always()
+        env:
+          GATE_ENABLED: ${{ steps.gate.outputs.enabled }}
+        run: |
+          if [ "$GATE_ENABLED" = "true" ]; then
+            echo "RENDER_GATE=ENABLED; rendering and QA have NOT yet been verified"
+            echo "### Render gate: ENABLED (not a production success)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "RENDER_GATE=SKIPPED; no MP4 or QA evidence produced by this run"
+            echo "### Render gate: SKIPPED — no video produced" >> "$GITHUB_STEP_SUMMARY"
+            echo "A green workflow conclusion does not imply rendering, QA approval, or publication." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Install tools
         if: steps.gate.outputs.enabled == 'true'
         run: |
