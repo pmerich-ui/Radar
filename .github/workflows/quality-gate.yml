@@ -5,6 +5,7 @@ on:
       - 'src/**'
       - 'tests/test_v5_*.py'
       - 'tests/test_marketing_studio.py'
+      - 'tests/test_production_ledger.py'
       - 'tests/test_revenue_quality.py'
       - 'daily_report.py'
       - 'tests/test_daily_report.py'
@@ -32,5 +33,7 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_v5_*.py' -v
       - name: Run media QA regression tests
         run: python -m unittest discover -s tests -p 'test_marketing_studio.py' -v
+      - name: Run durable production ledger tests
+        run: python -m unittest discover -s tests -p 'test_production_ledger.py' -v
       - name: Check Python syntax
         run: python -m compileall -q src tests daily_report.py
