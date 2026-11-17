@@ -74,7 +74,7 @@ jobs:
           summary = os.getenv("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary, "a", encoding="utf-8") as out:
-                  out.write("\\n".join(lines) + "\\n")
+                  out.write("\n".join(lines) + "\n")
           print("AWIN_MERCHANT_INVENTORY_OK; joined programmes:", len(rows))
           print("Merchant names and available metadata are in the job summary (not secret values).")
           print("SWISS_SHIPPING_NOT_VERIFIED; PRODUCT_LINKS_NOT_VERIFIED; COMMISSIONS_NOT_VERIFIED")
