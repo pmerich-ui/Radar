@@ -1,0 +1,45 @@
+name: Awin API read-only connection check
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-awin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify Awin publisher access without exposing credentials
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, urllib.error, sys
+          token = os.environ.get("AWIN_API_TOKEN", "").strip()
+          if not token:
+              print("BLOCKED: AWIN_API_TOKEN is missing or empty")
+              sys.exit(1)
+          req = urllib.request.Request(
+              "https://api.awin.com/accounts?type=publisher",
+              headers={"Authorization": "Bearer " + token, "Accept": "application/json"},
+              method="GET")
+          try:
+              with urllib.request.urlopen(req, timeout=20) as response:
+                  data = json.load(response)
+          except urllib.error.HTTPError as exc:
+              print("AWIN_API_CHECK_FAILED: HTTP", exc.code)
+              sys.exit(1)
+          except Exception as exc:
+              print("AWIN_API_CHECK_FAILED:", type(exc).__name__)
+              sys.exit(1)
+          accounts = data.get("accounts", []) if isinstance(data, dict) else data
+          if not isinstance(accounts, list):
+              print("AWIN_API_CHECK_FAILED: unexpected response shape")
+              sys.exit(1)
+          publishers = [a for a in accounts if isinstance(a, dict) and a.get("accountType") == "publisher"]
+          if not publishers:
+              print("AWIN_API_CHECK_FAILED: no publisher account accessible")
+              sys.exit(1)
+          print("AWIN_API_VERIFIED: authenticated publisher accounts:", len(publishers))
+          print("No token, account IDs, or personal data logged.")
+          PY
