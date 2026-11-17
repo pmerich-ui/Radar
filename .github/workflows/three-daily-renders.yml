@@ -113,18 +113,21 @@ jobs:
         env:
           BATCH_SIZE: '1'
         run: python -m src.batch
-      - name: Verify actual rendered MP4 evidence (report only)
+      - name: Verify actual rendered MP4 evidence (fail closed)
         if: steps.gate.outputs.enabled == 'true'
         run: |
           python - <<'PY'
           import json
           import pathlib
           import subprocess
+          import sys
           output = pathlib.Path('output')
           files = sorted(output.rglob('*.mp4')) if output.exists() else []
           lines = ['### Render evidence (not publication or creative QA)']
+          failures = []
           if not files:
               lines.append('RENDER_STATUS=NO_MP4 — no rendered MP4 found')
+              failures.append('NO_MP4')
           for file in files:
               try:
                   proc = subprocess.run(
@@ -139,6 +142,8 @@ jobs:
                   width, height = video.get('width', 0), video.get('height', 0)
                   duration = float(data.get('format', {}).get('duration', 0))
                   valid = bool(width and height and duration > 0)
+                  if not valid:
+                      failures.append(f'INVALID_MP4:{file}')
                   lines.append(
                       f"RENDER_STATUS={'MP4_PROBED' if valid else 'INVALID_MP4'} "
                       f"path={file} dimensions={width}x{height} "
@@ -147,10 +152,14 @@ jobs:
                   )
               except (subprocess.SubprocessError, ValueError, OSError, json.JSONDecodeError) as exc:
                   lines.append(f'RENDER_STATUS=PROBE_FAILED path={file} error={type(exc).__name__}')
+                  failures.append(f'PROBE_FAILED:{file}')
           summary = chr(10).join(lines) + chr(10)
           print(summary)
           with open(__import__('os').environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
               handle.write(summary)
+          if failures:
+              print('Render verification failed:', ', '.join(failures), file=sys.stderr)
+              sys.exit(1)
           PY
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
