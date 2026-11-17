@@ -68,6 +68,12 @@ def transition(db, job_id, target, evidence=None):
             db.commit()
             return False  # idempotent retry, no second external action
         allowed = target == NEXT.get(state) or target in ("FAILED_RETRYABLE", "BLOCKED") and state != "PUBLISHED_VERIFIED" or RETRY_TO.get(state) == target
+        if target == "FAILED_RETRYABLE":
+            if state in ("UPLOAD_STARTED", "UPLOADED"):
+                raise ValueError("Upload outcome uncertain: reconcile externally; never retry upload automatically")
+            retries = db.execute("SELECT COUNT(*) FROM events WHERE job_id=? AND new_state='FAILED_RETRYABLE'", (job_id,)).fetchone()[0]
+            if retries >= 3:
+                raise ValueError("Retry budget exhausted; manual reconciliation required")
         if not allowed:
             raise ValueError("Invalid state transition: " + state + " -> " + target)
         if target == "RENDERED":
