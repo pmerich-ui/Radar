@@ -39,7 +39,7 @@ def inspect(path):
              "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"],
             check=True, timeout=180, capture_output=True, text=True)
         import re
-        match = re.search(r"mean_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf))\\s*dB", loudness.stderr)
+        match = re.search(r"mean_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB", loudness.stderr)
         if not match or not math.isfinite(float(match.group(1))) or float(match.group(1)) < -45:
             return {"status": "BLOCKED", "reason": "AUDIO_SILENT_OR_TOO_QUIET",
                     "publishable": False}
