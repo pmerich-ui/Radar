@@ -34,11 +34,16 @@ class VideoQueue:
         job_id = job_id or str(uuid.uuid4())
         if not isinstance(payload, dict) or not job_id or len(job_id) > 128:
             raise ValueError("Invalid job")
-        with self.db:
+        self.db.execute("BEGIN IMMEDIATE")
+        try:
             self.db.execute("INSERT INTO jobs(id,state,payload,updated_at) VALUES (?,?,?,?)",
                             (job_id, "IDEA", json.dumps(payload), now()))
             self.db.execute("INSERT INTO events(job_id,old_state,new_state,at,evidence) VALUES (?,?,?,?,?)",
                             (job_id, None, "IDEA", now(), "{}"))
+            self.db.execute("COMMIT")
+        except BaseException:
+            self.db.execute("ROLLBACK")
+            raise
         return job_id
 
     def get(self, job_id):
@@ -51,6 +56,8 @@ class VideoQueue:
         evidence = evidence or {}
         if not isinstance(evidence, dict):
             raise ValueError("Evidence must be object")
+        if target == "FAILED_RETRYABLE" and expected in ("UPLOADED", "PUBLISHED_VERIFIED", "BLOCKED"):
+            raise ValueError("Unsafe retry after upload")
         if target not in (NEXT.get(expected), "BLOCKED", "FAILED_RETRYABLE"):
             if not (expected == "FAILED_RETRYABLE" and target == "GENERATOR_SELECTED"):
                 raise ValueError("Illegal transition")
