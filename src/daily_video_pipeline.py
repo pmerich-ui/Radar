@@ -22,12 +22,12 @@ def run(root):
         "created_at_utc": today, "agent_18": result.get("status"),
         "agent_21": qa, "video_file": Path(video).name if video else None,
         "sha256": hashlib.sha256(Path(video).read_bytes()).hexdigest() if video and passed else None,
-        "status": "QA_PASSED" if passed else "BLOCKED",
+        "status": "TECHNICAL_PASS_ONLY" if passed else "BLOCKED",
         "creative_review": "REQUIRED", "rights_review": "REQUIRED",
         "merchant_approval": "NOT_VERIFIED", "owner_approval": False,
         "publication": "NOT_AUTHORIZED", "platform_post_id": None,
         "publishable": False,
-        "note": "Generic illustrated shopping content, not a verified affiliate product ad."
+        "note": "Technical checks do not verify audible sound, photorealism, commercial rights, or creative quality. Generic illustrated shopping content is not approved for publication."
     }
     out = root / "daily_video_report.json"
     out.write_text(json.dumps(entry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
