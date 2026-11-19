@@ -6,6 +6,8 @@ on:
       - 'tests/test_revenue_quality.py'
       - 'daily_report.py'
       - 'tests/test_daily_report.py'
+      - 'src/video_qa_agent.py'
+      - 'tests/test_video_qa_agent.py'
       - '.github/workflows/quality-gate.yml'
   pull_request:
   workflow_dispatch:
@@ -24,5 +26,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_revenue_quality.py' -v
           python -m unittest discover -s tests -p 'test_daily_report.py' -v
+      - name: Run strict video technical QA regression tests
+        run: python -m unittest discover -s tests -p 'test_video_qa_agent.py' -v
       - name: Check Python syntax
-        run: python -m compileall -q src/revenue_quality.py daily_report.py
+        run: python -m compileall -q src/revenue_quality.py daily_report.py src/video_qa_agent.py tests/test_video_qa_agent.py
