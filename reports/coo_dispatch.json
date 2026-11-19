@@ -1,13 +1,13 @@
 {
-  "day_utc": "20261118",
-  "created": [],
-  "existing": [
-    "coo-20261118-deals",
-    "coo-20261118-creative",
-    "coo-20261118-produce",
-    "coo-20261118-qa",
-    "coo-20261118-publish"
+  "day_utc": "20261119",
+  "created": [
+    "coo-20261119-deals",
+    "coo-20261119-creative",
+    "coo-20261119-produce",
+    "coo-20261119-qa",
+    "coo-20261119-publish"
   ],
+  "existing": [],
   "publication_authorized": false,
   "external_actions": false
 }
