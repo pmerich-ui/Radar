@@ -13,6 +13,7 @@ class StrictMediaQATests(unittest.TestCase):
     def test_missing_file_fails_closed(self):
         result = inspect("/nonexistent/dealradar-video.mp4")
         self.assertFalse(result["passed"])
+        self.assertIs(result["publication_allowed"], False)
 
     def test_invalid_media_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
