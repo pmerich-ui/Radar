@@ -1,0 +1,34 @@
+name: DealRadar strict media QA regression (development only)
+on:
+  push:
+    branches:
+      - dev/strict-media-qa-20261120
+    paths:
+      - 'src/strict_media_qa.py'
+      - 'tests/test_strict_media_qa.py'
+      - '.github/workflows/strict-media-qa-dev.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  strict-qa-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify ffmpeg availability
+        run: ffmpeg -version && ffprobe -version
+      - name: Run strict QA regression tests
+        run: python -m unittest tests.test_strict_media_qa -v
+      - name: Confirm publication stays disabled
+        run: |
+          python - <<'PY'
+          from src.strict_media_qa import inspect
+          result = inspect('/nonexistent/dealradar.mp4')
+          assert not result['passed']
+          assert result.get('publication_allowed') is not True
+          print('Fail-closed media QA confirmed; no video produced or published')
+          PY
