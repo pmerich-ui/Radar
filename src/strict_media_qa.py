@@ -38,7 +38,7 @@ def inspect(path: str | Path) -> dict:
         if audio:
             volume = _run(["ffmpeg", "-nostdin", "-v", "info", "-i", str(p),
                 "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"])
-            match = re.search(r"mean_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf)) dB", volume.stderr)
+            match = re.search(r"mean_volume:\s*(-?(?:\d+(?:\.\d+)?|inf)) dB", volume.stderr)
             level = float(match.group(1)) if match else float("-inf")
             evidence["mean_volume_db"] = level if level != float("-inf") else None
             checks["audio_not_silent"] = volume.returncode == 0 and level > -55
