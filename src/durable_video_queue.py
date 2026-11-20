@@ -86,4 +86,5 @@ class Queue:
                  publish_key,time.time(),job_id))
             db.execute("INSERT INTO events VALUES(?,?,?,?,?)",
                 (job_id,row["revision"]+1,expected,target,time.time()))
-            return self.get(job_id)
+            db.row_factory=sqlite3.Row
+            return dict(db.execute("SELECT * FROM jobs WHERE id=?",(job_id,)).fetchone())
