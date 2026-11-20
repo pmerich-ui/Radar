@@ -14,13 +14,13 @@ def inspect(path: str | Path) -> dict:
     evidence = {}
     try:
         if not p.is_file():
-            return {"passed": False, "checks": {"file_exists": False}, "evidence": {}}
+            return {"passed": False, "checks": {"file_exists": False}, "evidence": {}, "publication_allowed": False}
         checks["nonempty_file"] = p.stat().st_size > 10000
         probe = _run(["ffprobe", "-v", "error", "-show_entries",
             "format=duration:stream=codec_type,codec_name,width,height,r_frame_rate",
             "-of", "json", str(p)], 30)
         if probe.returncode != 0:
-            return {"passed": False, "checks": {**checks, "ffprobe": False}, "evidence": {"error": probe.stderr[-500:]}}
+            return {"passed": False, "checks": {**checks, "ffprobe": False}, "evidence": {"error": probe.stderr[-500:]}, "publication_allowed": False}
         info = json.loads(probe.stdout)
         streams = info.get("streams", [])
         video = [s for s in streams if s.get("codec_type") == "video"]
