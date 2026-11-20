@@ -1,6 +1,7 @@
 """Strict, fail-closed media preflight. Does not certify creativity or licensing."""
 from __future__ import annotations
 import json
+from fractions import Fraction
 import re
 import subprocess
 from pathlib import Path
@@ -28,6 +29,7 @@ def inspect(path: str | Path) -> dict:
         duration = float(info.get("format", {}).get("duration", 0))
         checks["duration_15_to_20"] = 15 <= duration <= 20
         checks["resolution_1080x1920"] = len(video) == 1 and (video[0].get("width"), video[0].get("height")) == (1080, 1920)
+        checks["frame_rate_30fps"] = len(video) == 1 and video[0].get("r_frame_rate") is not None and Fraction(video[0]["r_frame_rate"]) == 30
         checks["video_h264"] = len(video) == 1 and video[0].get("codec_name") == "h264"
         checks["audio_aac"] = bool(audio) and audio[0].get("codec_name") == "aac"
         evidence["duration_seconds"] = duration
