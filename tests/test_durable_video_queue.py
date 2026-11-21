@@ -42,6 +42,15 @@ class DurableQueueTests(unittest.TestCase):
         with self.assertRaises(Conflict):
             restarted.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
 
+    def test_blocked_is_terminal_across_restart(self):
+        self.q.transition(self.id,"IDEA","BLOCKED")
+        restarted=Queue(self.tmp.name+"/queue.sqlite")
+        for target in ("IDEA","FAILED_RETRYABLE","BLOCKED","SCRIPT_READY"):
+            with self.assertRaises(Conflict):
+                restarted.transition(self.id,"BLOCKED",target)
+        self.assertEqual(restarted.get(self.id)["state"],"BLOCKED")
+        self.assertEqual(restarted.get(self.id)["revision"],1)
+
     def test_publication_key_cannot_be_preassigned(self):
         with self.assertRaises(Conflict):
             self.q.transition(self.id,"IDEA","SCRIPT_READY",publish_key="premature")
