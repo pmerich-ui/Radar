@@ -54,7 +54,7 @@ class Queue:
             db.row_factory=sqlite3.Row
             row=db.execute("SELECT * FROM jobs WHERE id=?",(job_id,)).fetchone()
             if not row or row["state"]!=expected: raise Conflict("State mismatch")
-            if expected=="PUBLISHED_VERIFIED": raise Conflict("Terminal state")
+            if expected in ("PUBLISHED_VERIFIED", "BLOCKED"): raise Conflict("Terminal state; manual reconciliation required")
             if target=="FAILED_RETRYABLE":
                 if expected in ("UPLOAD_STARTED","UPLOADED"):
                     raise Conflict("Upload outcome uncertain; manual reconciliation required")
