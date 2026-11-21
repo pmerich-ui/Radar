@@ -56,6 +56,8 @@ class Queue:
             if not row or row["state"]!=expected: raise Conflict("State mismatch")
             if expected=="PUBLISHED_VERIFIED": raise Conflict("Terminal state")
             if target=="FAILED_RETRYABLE":
+                if expected in ("UPLOAD_STARTED","UPLOADED"):
+                    raise Conflict("Upload outcome uncertain; manual reconciliation required")
                 if row["retries"]>=max_retries: raise Conflict("Retry limit")
                 prior=expected
                 retries=row["retries"]+1
@@ -69,6 +71,9 @@ class Queue:
                 if expected not in ORDER or target not in ORDER or ORDER.index(target)!=ORDER.index(expected)+1:
                     raise Conflict("Illegal transition")
                 prior=None; retries=row["retries"]
+            allowed_evidence = {v for state,v in REQUIRED.items() if state == target}
+            if any(k not in allowed_evidence for k in evidence):
+                raise Conflict("Evidence only accepted at its verification gate")
             flags={k:bool(row[k]) or evidence.get(k) is True for k in
                 ("technical_ok","creative_ok","rights_ok","approval_ok")}
             if target in REQUIRED and not flags[REQUIRED[target]]:
