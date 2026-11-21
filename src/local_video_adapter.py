@@ -1,34 +1,43 @@
-"""Executable zero-credit local FFmpeg adapter for DealRadar.
+"""Zero-cost local FFmpeg illustration renderer for development only.
 
-Uses the existing original-illustration renderer. This is NOT an AI video provider
-and is not evidence of creative quality, commercial rights, or publication approval.
+A technical render is not proof of photorealism, commercial rights, or approval.
+This adapter does not publish, and never claims licensed generation credits.
 """
 import argparse
 import json
 from pathlib import Path
 from .producer import CATALOG, render
-from .video_provider_router import registry, fallback
 from .video_qa_agent import inspect
+from .video_provider_router import plan
 
-LOCAL = '[{"name":"local_ffmpeg","enabled":true,"commercial_rights":true,"supports_vertical":true,"credits":1,"cost_credits":0,"priority":1}]'
+# This renderer is deliberately INELIGIBLE for rights-gated production routing.
+# Local execution below is for technical diagnostics, not publication.
+LOCAL = '[{"name":"local_ffmpeg","enabled":true,"commercial_rights":false,"supports_vertical":true,"credits":0,"cost_credits":0,"priority":1}]'
 
 def run(output="output/router-demo.mp4"):
     target = Path(output)
     target.parent.mkdir(parents=True, exist_ok=True)
-    def attempt(provider):
-        if provider.name != "local_ffmpeg":
-            return {"status": "FAILED", "charged": False}
+    result = {
+        "status": "BLOCKED",
+        "provider": "local_ffmpeg",
+        "creative_qa": "NOT_VERIFIED",
+        "rights_review": "RIGHTS_UNVERIFIED",
+        "quality_score": None,
+        "publication_authorized": False,
+        "production_routing": plan(LOCAL),
+    }
+    try:
         render(CATALOG[0], target)
         qa = inspect(target)
-        if qa["status"] != "TECHNICAL_PASS":
-            return {"status": "FAILED", "charged": False}
-        return {"status": "SUCCEEDED", "verified_file": str(target), "charged": False}
-    outcome = fallback(registry(LOCAL), attempt)
-    outcome["creative_qa"] = "NOT_VERIFIED"
-    outcome["rights_review"] = "REQUIRED"
-    outcome["quality_score"] = None
-    outcome["publication_authorized"] = False
-    return outcome
+        result["technical_qa"] = qa
+        if qa.get("status") == "TECHNICAL_PASS":
+            result.update(status="RENDERED_UNREVIEWED", file=str(target))
+        else:
+            result["status"] = "TECHNICAL_QA_FAILED"
+    except Exception as exc:
+        result["status"] = "RENDER_FAILED"
+        result["error_type"] = type(exc).__name__
+    return result
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
