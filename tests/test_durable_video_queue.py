@@ -38,4 +38,26 @@ class DurableQueueTests(unittest.TestCase):
         self.q.transition(self.id,"FAILED_RETRYABLE","IDEA")
         with self.assertRaises(Conflict): self.q.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
 
+    def test_evidence_cannot_be_preapproved(self):
+        with self.assertRaises(Conflict):
+            self.q.transition(self.id,"IDEA","SCRIPT_READY",{"approval_ok":True})
+        self.assertEqual(self.q.get(self.id)["state"],"IDEA")
+
+    def test_upload_outcome_cannot_be_automatically_retried(self):
+        evidence_by_target = {
+            "TECHNICAL_QA_PASSED":{"technical_ok":True},
+            "CREATIVE_QA_PASSED":{"creative_ok":True},
+            "RIGHTS_VERIFIED":{"rights_ok":True},
+            "USER_APPROVED":{"approval_ok":True},
+        }
+        for a,b in zip(ORDER,ORDER[1:]):
+            self.q.transition(self.id,a,b,evidence_by_target.get(b),publish_key="pub-1" if b=="UPLOAD_STARTED" else None)
+            if b=="UPLOAD_STARTED":
+                with self.assertRaises(Conflict):
+                    self.q.transition(self.id,"UPLOAD_STARTED","FAILED_RETRYABLE")
+            if b=="UPLOADED":
+                with self.assertRaises(Conflict):
+                    self.q.transition(self.id,"UPLOADED","FAILED_RETRYABLE")
+        self.assertEqual(self.q.get(self.id)["state"],"PUBLISHED_VERIFIED")
+
 if __name__=="__main__": unittest.main()
