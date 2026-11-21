@@ -34,9 +34,13 @@ class DurableQueueTests(unittest.TestCase):
     def test_retry_limit(self):
         self.q.transition(self.id,"IDEA","FAILED_RETRYABLE")
         self.q.transition(self.id,"FAILED_RETRYABLE","IDEA")
-        self.q.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
-        self.q.transition(self.id,"FAILED_RETRYABLE","IDEA")
-        with self.assertRaises(Conflict): self.q.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
+        with self.assertRaises(Conflict):
+            self.q.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
+        self.assertEqual(self.q.get(self.id)["state"],"IDEA")
+        self.assertEqual(self.q.get(self.id)["retries"],1)
+        restarted=Queue(self.tmp.name+"/queue.sqlite")
+        with self.assertRaises(Conflict):
+            restarted.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
 
     def test_publication_key_cannot_be_preassigned(self):
         with self.assertRaises(Conflict):
