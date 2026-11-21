@@ -82,6 +82,8 @@ class Queue:
                 raise Conflict("Missing publication prerequisites")
             if target=="UPLOAD_STARTED" and not (publish_key or row["publish_key"]):
                 raise Conflict("Missing idempotency key")
+            if publish_key is not None and target != "UPLOAD_STARTED":
+                raise Conflict("Publication key only accepted at upload start")
             if publish_key and row["publish_key"] and row["publish_key"]!=publish_key:
                 raise Conflict("Publication key cannot change")
             db.execute("""UPDATE jobs SET state=?,revision=revision+1,retries=?,prior_state=?,
