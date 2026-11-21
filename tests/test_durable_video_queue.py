@@ -38,6 +38,12 @@ class DurableQueueTests(unittest.TestCase):
         self.q.transition(self.id,"FAILED_RETRYABLE","IDEA")
         with self.assertRaises(Conflict): self.q.transition(self.id,"IDEA","FAILED_RETRYABLE",max_retries=1)
 
+    def test_publication_key_cannot_be_preassigned(self):
+        with self.assertRaises(Conflict):
+            self.q.transition(self.id,"IDEA","SCRIPT_READY",publish_key="premature")
+        self.assertEqual(self.q.get(self.id)["state"],"IDEA")
+        self.assertIsNone(self.q.get(self.id)["publish_key"])
+
     def test_evidence_cannot_be_preapproved(self):
         with self.assertRaises(Conflict):
             self.q.transition(self.id,"IDEA","SCRIPT_READY",{"approval_ok":True})
