@@ -1,0 +1,23 @@
+name: Verify durable video queue (development)
+on:
+  push:
+    branches:
+      - dev/persistent-video-queue-v6-20261121
+    paths:
+      - 'src/durable_video_queue.py'
+      - 'tests/test_durable_video_queue.py'
+      - '.github/workflows/verify-durable-video-queue.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  queue-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test durable queue including restart and publication gates
+        run: python -m unittest tests.test_durable_video_queue -v
