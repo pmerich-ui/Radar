@@ -21,7 +21,7 @@ class QueueTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             q=Queue(Path(d)/"queue.sqlite")
             jid=q.add("campaign-2",{"product":"strainer"})["id"]
-            for a,b in zip(STATES[:9],STATES[1:10]):
+            for a,b in zip(STATES[:8],STATES[1:9]):
                 assert q.advance(jid,a,b,media_hash="hash1" if b=="RENDERED" else None,
                                  evidence_ref=f"verified-{b}" if b in ("TECHNICAL_QA_PASSED","CREATIVE_QA_PASSED","RIGHTS_VERIFIED") else None)
             assert q.get(jid)["status"]=="AWAITING_USER_APPROVAL"
