@@ -55,4 +55,6 @@ class QueueTests(unittest.TestCase):
                 if i<2: assert q.resume(jid)
             assert q.get(jid)["status"]=="BLOCKED"
             assert not q.resume(jid)
+            assert not q.fail(jid,"BLOCKED","must remain blocked")
+            assert q.get(jid)["status"]=="BLOCKED"
             q.close()
