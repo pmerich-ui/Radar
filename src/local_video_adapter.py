@@ -10,7 +10,7 @@ from .producer import CATALOG, render
 from .video_provider_router import registry, fallback
 from .video_qa_agent import inspect
 
-LOCAL = '[{"name":"local_ffmpeg","enabled":true,"commercial_rights":true,"supports_vertical":true,"credits":1,"cost_credits":0,"priority":1}]'
+LOCAL = '[{"name":"local_ffmpeg","enabled":true,"commercial_rights":false,"supports_vertical":true,"credits":0,"cost_credits":0,"priority":1}]'
 
 def run(output="output/router-demo.mp4"):
     target = Path(output)
