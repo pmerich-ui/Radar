@@ -22,8 +22,8 @@ class QueueTests(unittest.TestCase):
             q=Queue(Path(d)/"queue.sqlite")
             jid=q.add("campaign-2",{"product":"strainer"})["id"]
             for a,b in zip(STATES[:9],STATES[1:10]):
-                assert q.advance(jid,a,b,media_hash="hash1" if b=="RENDERED" else None)
-            assert q.get(jid)["status"]=="AWAITING_USER_APPROVAL"
+                assert q.advance(jid,a,b,media_hash="hash1" if b=="RENDERED" else None,\n                                 evidence_ref=f"verified-{b}" if b in ("TECHNICAL_QA_PASSED","CREATIVE_QA_PASSED","RIGHTS_VERIFIED") else None)
+            assert q.get(jid)["status"]=="AWAITING_USER_APPROVAL"\n            assert q.db.execute("SELECT COUNT(*) FROM job_evidence WHERE job_id=?",(jid,)).fetchone()[0]==3
             with self.assertRaises(ValueError):
                 q.advance(jid,"AWAITING_USER_APPROVAL","USER_APPROVED")
             assert q.advance(jid,"AWAITING_USER_APPROVAL","USER_APPROVED",approval_ref="user-confirmation-video-123")
@@ -31,7 +31,7 @@ class QueueTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 q.advance(jid,"UPLOAD_STARTED","UPLOADED")
             assert q.advance(jid,"UPLOAD_STARTED","UPLOADED",external_post_id="post-123")
-            assert q.advance(jid,"UPLOADED","PUBLISHED_VERIFIED")
+            with self.assertRaises(ValueError):\n                q.advance(jid,"UPLOADED","PUBLISHED_VERIFIED")\n            assert q.advance(jid,"UPLOADED","PUBLISHED_VERIFIED",evidence_ref="metricool-confirmed-post-123")
             assert not q.fail(jid,"PUBLISHED_VERIFIED","irrelevant")
             q.close()
     def test_retry_limit(self):
