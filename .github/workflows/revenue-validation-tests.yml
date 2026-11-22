@@ -7,6 +7,10 @@ on:
       - 'src/revenue_validation.py'
       - 'tests/test_revenue_validation.py'
       - 'src/local_video_adapter.py'
+      - 'src/product_photo_video.py'
+      - 'tests/test_product_photo_video.py'
+      - 'src/product_photo_video.py'
+      - 'tests/test_product_photo_video.py'
       - '.github/workflows/revenue-validation-tests.yml'
   pull_request:
     paths:
@@ -29,6 +33,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run revenue regression tests
         run: python -m unittest discover -s tests -p test_revenue_validation.py -v
+      - name: Run product photo safety tests
+        run: python -m unittest discover -s tests -p test_product_photo_video.py -v
       - name: Audit real deal inventory without inventing revenue
         run: python -m src.revenue_validation --deals site/deals.json
       - name: Verify local illustrated renderer is rights-blocked
