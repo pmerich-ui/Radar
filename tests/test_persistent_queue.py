@@ -38,6 +38,14 @@ class QueueTests(unittest.TestCase):
             assert q.advance(jid,"UPLOADED","PUBLISHED_VERIFIED",evidence_ref="metricool-confirmed-post-123")
             assert not q.fail(jid,"PUBLISHED_VERIFIED","irrelevant")
             q.close()
+    def test_same_key_different_payload_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            q=Queue(Path(d)/"queue.sqlite")
+            first=q.add("campaign",{"product":"cable-clips"})
+            with self.assertRaises(ValueError):
+                q.add("campaign",{"product":"different-product"})
+            assert q.get(first["id"])["status"]=="IDEA"
+            q.close()
     def test_retry_limit(self):
         with tempfile.TemporaryDirectory() as d:
             q=Queue(Path(d)/"queue.sqlite")
