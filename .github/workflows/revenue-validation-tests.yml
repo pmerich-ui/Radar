@@ -9,14 +9,20 @@ on:
       - 'src/local_video_adapter.py'
       - 'src/product_photo_video.py'
       - 'tests/test_product_photo_video.py'
-      - 'src/product_photo_video.py'
-      - 'tests/test_product_photo_video.py'
+      - 'src/persistent_queue.py'
+      - 'tests/test_persistent_queue.py'
+      - 'src/video_qa_agent.py'
       - '.github/workflows/revenue-validation-tests.yml'
   pull_request:
     paths:
       - 'src/revenue_validation.py'
       - 'tests/test_revenue_validation.py'
       - 'src/local_video_adapter.py'
+      - 'src/product_photo_video.py'
+      - 'tests/test_product_photo_video.py'
+      - 'src/persistent_queue.py'
+      - 'tests/test_persistent_queue.py'
+      - 'src/video_qa_agent.py'
       - '.github/workflows/revenue-validation-tests.yml'
 permissions:
   contents: read
@@ -35,6 +41,8 @@ jobs:
         run: python -m unittest discover -s tests -p test_revenue_validation.py -v
       - name: Run product photo safety tests
         run: python -m unittest discover -s tests -p test_product_photo_video.py -v
+      - name: Run durable queue safety tests
+        run: python -m unittest discover -s tests -p test_persistent_queue.py -v
       - name: Audit real deal inventory without inventing revenue
         run: python -m src.revenue_validation --deals site/deals.json
       - name: Verify local illustrated renderer is rights-blocked
