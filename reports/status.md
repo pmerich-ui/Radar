@@ -7,13 +7,13 @@ Automatisch erzeugter, quellengestützter Bericht. Keine Aussage über ausgefüh
 - Aktive KI-Modell-Agenten: **0** (LLM_NOT_CONFIGURED)
 - Veröffentlichung: **GESPERRT** (DRY_RUN, keine bestätigte Freigabe)
 - Aufgaben ausstehend: **0**
-- Aufgaben mit Ergebnisdatei: **82**
+- Aufgaben mit Ergebnisdatei: **87**
 
 ## Ergebnisstatus
 
-- BLOCKED: 48
+- BLOCKED: 51
 - COMPLETED: 2
-- NEEDS_REVIEW: 32
+- NEEDS_REVIEW: 34
 
 ## Grenzen
 
