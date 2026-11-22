@@ -1,0 +1,28 @@
+{
+  "campaign_id": "headphones-editorial-001",
+  "product_name": "Kopfhörer: 3 Checks vor dem Kauf",
+  "editorial_only": true,
+  "affiliate_offer_id": null,
+  "assets": [
+    {
+      "path": "assets/headphones_wood.jpg",
+      "license": "CC0-1.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Headphones_on_wood_in_black_and_white_(Unsplash).jpg",
+      "evidence": "https://commons.wikimedia.org/wiki/File:Headphones_on_wood_in_black_and_white_(Unsplash).jpg"
+    },
+    {
+      "path": "assets/headphones_phone.jpg",
+      "license": "CC0-1.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Headphones_and_smartphone_(Unsplash).jpg",
+      "evidence": "https://commons.wikimedia.org/wiki/File:Headphones_and_smartphone_(Unsplash).jpg"
+    },
+    {
+      "path": "assets/headphones_desk.jpg",
+      "license": "CC0-1.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Top_view_of_headphones_hanging_from_a_desk_(Unsplash).jpg",
+      "evidence": "https://commons.wikimedia.org/wiki/File:Top_view_of_headphones_hanging_from_a_desk_(Unsplash).jpg"
+    }
+  ],
+  "status": "ASSETS_IDENTIFIED_DOWNLOAD_AND_VISUAL_RIGHTS_REVIEW_REQUIRED",
+  "publishable": false
+}
