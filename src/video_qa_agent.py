@@ -16,11 +16,13 @@ def inspect(path):
         stream = next(s for s in info.get("streams", []) if s.get("codec_type") == "video")
         num, den = (int(x) for x in stream["r_frame_rate"].split("/"))
         duration = float(info["format"]["duration"])
-        valid = (stream.get("codec_name") == "h264"
+        audio = next((a for a in info.get("streams", []) if a.get("codec_type") == "audio"), None)
+        valid = (audio is not None and audio.get("codec_name") == "aac"
+                 and stream.get("codec_name") == "h264"
                  and stream.get("pix_fmt") == "yuv420p"
                  and (stream.get("width"), stream.get("height")) == (1080, 1920)
                  and den > 0 and 23 <= num / den <= 60
-                 and 15 <= duration <= 30)
+                 and 15 <= duration <= 20)
         return {"status": "TECHNICAL_PASS" if valid else "BLOCKED",
                 "reason": "VIDEO_TECHNICAL_CHECK" if valid else "VIDEO_SPEC_MISMATCH",
                 "duration_seconds": duration, "publishable": False,
