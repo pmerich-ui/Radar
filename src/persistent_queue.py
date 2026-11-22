@@ -84,7 +84,7 @@ class Queue:
         self.db.execute("BEGIN IMMEDIATE")
         try:
             current=self.get(job_id)
-            if not current or current["status"]!=expected or expected in ("PUBLISHED_VERIFIED","UPLOADED","UPLOAD_STARTED"):
+            if not current or current["status"]!=expected or expected in ("PUBLISHED_VERIFIED","UPLOADED","UPLOAD_STARTED","BLOCKED","FAILED_RETRYABLE"):
                 self.db.execute("ROLLBACK")
                 return False
             attempts=current["attempts"]+1
