@@ -27,6 +27,8 @@ def prepare(manifest, output):
             raise ValueError("Asset rights documentation incomplete")
         photos.append(p)
     output=Path(output)
+    if output.suffix.lower() != ".mp4":
+        raise ValueError("Output must be MP4")
     output.parent.mkdir(parents=True,exist_ok=True)
     cmd=["ffmpeg","-hide_banner","-loglevel","error","-y"]
     for p in photos:
@@ -44,6 +46,12 @@ def prepare(manifest, output):
     subprocess.run(cmd,check=True,timeout=240)
     from .video_qa_agent import inspect
     result=inspect(output)
+    # Probe success alone does not prove the complete streams can be decoded.
+    if result["status"] != "TECHNICAL_PASS":
+        raise ValueError("Video stream QA failed")
+    subprocess.run(["ffmpeg","-v","error","-xerror","-i",str(output),
+                    "-map","0:v:0","-map","0:a:0","-f","null","-"],
+                   check=True,timeout=120,capture_output=True)
     result.update({"file":str(output),"creative_qa":"PENDING_HUMAN_REVIEW",
                    "rights":"RIGHTS_UNVERIFIED","publication_authorized":False})
     return result
