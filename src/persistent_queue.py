@@ -33,7 +33,10 @@ class Queue:
         fingerprint=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest()
         job_id=hashlib.sha256(str(key).encode()).hexdigest()[:24]
         self.db.execute("INSERT OR IGNORE INTO jobs(id,fingerprint,status) VALUES(?,?,'IDEA')",(job_id,fingerprint))
-        return self.get(job_id)
+        job=self.get(job_id)
+        if job is None or job["fingerprint"] != fingerprint:
+            raise ValueError("Campaign key or payload fingerprint collision")
+        return job
     def get(self, job_id):
         row=self.db.execute("SELECT id,fingerprint,status,attempts,media_hash,external_post_id,approval_ref,last_error FROM jobs WHERE id=?",(job_id,)).fetchone()
         return dict(zip(("id","fingerprint","status","attempts","media_hash","external_post_id","approval_ref","last_error"),row)) if row else None
