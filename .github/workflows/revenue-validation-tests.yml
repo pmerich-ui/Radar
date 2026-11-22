@@ -1,0 +1,41 @@
+name: Revenue validation safety tests
+on:
+  push:
+    branches:
+      - fix/revenue-validation-gates-20261122
+    paths:
+      - 'src/revenue_validation.py'
+      - 'tests/test_revenue_validation.py'
+      - 'src/local_video_adapter.py'
+      - '.github/workflows/revenue-validation-tests.yml'
+  pull_request:
+    paths:
+      - 'src/revenue_validation.py'
+      - 'tests/test_revenue_validation.py'
+      - 'src/local_video_adapter.py'
+      - '.github/workflows/revenue-validation-tests.yml'
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run revenue regression tests
+        run: python -m unittest discover -s tests -p test_revenue_validation.py -v
+      - name: Audit real deal inventory without inventing revenue
+        run: python -m src.revenue_validation --deals site/deals.json
+      - name: Verify local illustrated renderer is rights-blocked
+        run: |
+          python - <<'PY'
+          from src.local_video_adapter import LOCAL
+          from src.video_provider_router import plan
+          result=plan(LOCAL)
+          assert result['status']=='BLOCKED_NO_ELIGIBLE_PROVIDER', result
+          assert not result['publication_authorized']
+          print(result)
+          PY
