@@ -59,6 +59,14 @@ class Queue:
             if not current or current["status"]!=expected:
                 self.db.execute("ROLLBACK")
                 return False
+            if target in ("USER_APPROVED", "UPLOAD_STARTED", "UPLOADED", "PUBLISHED_VERIFIED"):
+                required = ("TECHNICAL_QA_PASSED", "CREATIVE_QA_PASSED", "RIGHTS_VERIFIED")
+                proven = {row[0] for row in self.db.execute(
+                    "SELECT state FROM job_evidence WHERE job_id=?", (job_id,)).fetchall()}
+                if not set(required).issubset(proven) or not current["media_hash"]:
+                    raise ValueError("Upload gate: missing media fingerprint or QA/rights evidence")
+                if target != "USER_APPROVED" and not current["approval_ref"]:
+                    raise ValueError("Upload gate: missing specific user approval")
             self.db.execute("""UPDATE jobs SET status=?,media_hash=COALESCE(?,media_hash),
                 approval_ref=COALESCE(?,approval_ref),
                 external_post_id=COALESCE(?,external_post_id) WHERE id=?""",
