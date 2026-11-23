@@ -37,4 +37,16 @@ class QueueTests(unittest.TestCase):
             self.assertFalse(q.resume(job))
             self.assertEqual(q.get(job)["state"],"FAILED_RETRYABLE")
 
+    def test_paused_job_cannot_transition_without_resume(self):
+        with tempfile.TemporaryDirectory() as d:
+            q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
+            self.assertTrue(q.transition(job,"IDEA","FAILED_RETRYABLE"))
+            with self.assertRaises(ValueError):
+                q.transition(job,"FAILED_RETRYABLE","BLOCKED")
+            with self.assertRaises(ValueError):
+                q.transition(job,"FAILED_RETRYABLE","FAILED_RETRYABLE")
+            self.assertEqual(q.get(job)["state"],"FAILED_RETRYABLE")
+            self.assertTrue(q.resume(job))
+            self.assertEqual(q.get(job)["state"],"IDEA")
+
 if __name__=="__main__": unittest.main()
