@@ -7,6 +7,8 @@ on:
     paths:
       - 'src/video_job_queue.py'
       - 'tests/test_video_job_queue.py'
+      - 'src/video_qa_agent.py'
+      - 'tests/test_video_qa_agent.py'
       - '.github/workflows/video-queue-safety.yml'
 permissions:
   contents: read
@@ -25,4 +27,6 @@ jobs:
         with:
           python-version: '3.12'
       - name: Execute SQLite queue regression tests
-        run: python -m unittest discover -s tests -p 'test_video_job_queue.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_video_job_queue.py' -v
+          python -m unittest discover -s tests -p 'test_video_qa_agent.py' -v
