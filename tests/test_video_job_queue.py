@@ -19,7 +19,9 @@ class QueueTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
             states=("IDEA","SCRIPT_READY","GENERATOR_SELECTED","RENDERING","RENDERED","TECHNICAL_QA_PASSED","CREATIVE_QA_PASSED","RIGHTS_VERIFIED","AWAITING_USER_APPROVAL")
-            for a,b in zip(states,states[1:]): self.assertTrue(q.transition(job,a,b))
+            for a,b in zip(states,states[1:]):
+                evidence = "verified-test-evidence-"+b if b in ("TECHNICAL_QA_PASSED","CREATIVE_QA_PASSED","RIGHTS_VERIFIED") else None
+                self.assertTrue(q.transition(job,a,b,evidence_ref=evidence))
             with self.assertRaises(ValueError): q.transition(job,"AWAITING_USER_APPROVAL","USER_APPROVED")
             self.assertTrue(q.transition(job,"AWAITING_USER_APPROVAL","USER_APPROVED",approval_id="approval-for-this-video"))
             self.assertTrue(q.transition(job,"USER_APPROVED","UPLOAD_STARTED"))
@@ -27,6 +29,15 @@ class QueueTests(unittest.TestCase):
             with self.assertRaises(ValueError): q.transition(job,"UPLOADED","PUBLISHED_VERIFIED")
             self.assertTrue(q.transition(job,"UPLOADED","PUBLISHED_VERIFIED",platform_post_id="verified-platform-id"))
             with self.assertRaises(ValueError): q.transition(job,"PUBLISHED_VERIFIED","FAILED_RETRYABLE")
+    def test_missing_qa_evidence_is_blocked(self):
+        with tempfile.TemporaryDirectory() as d:
+            q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
+            for a,b in (("IDEA","SCRIPT_READY"),("SCRIPT_READY","GENERATOR_SELECTED"),("GENERATOR_SELECTED","RENDERING"),("RENDERING","RENDERED")):
+                self.assertTrue(q.transition(job,a,b))
+            with self.assertRaises(ValueError): q.transition(job,"RENDERED","TECHNICAL_QA_PASSED")
+            self.assertEqual(q.get(job)["state"],"RENDERED")
+            self.assertTrue(q.transition(job,"RENDERED","TECHNICAL_QA_PASSED",evidence_ref="test-technical-report"))
+
     def test_resume_without_double_render(self):
         with tempfile.TemporaryDirectory() as d:
             q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
