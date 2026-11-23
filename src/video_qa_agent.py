@@ -35,7 +35,7 @@ def inspect(path):
                 ["ffmpeg", "-nostdin", "-hide_banner", "-i", str(file),
                  "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"],
                 capture_output=True, text=True, timeout=120)
-            match = re.search(r"mean_volume:\\s*(-?(?:\\d+(?:\\.\\d+)?|inf))\\s*dB", volume.stderr)
+            match = re.search(r"mean_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB", volume.stderr)
             if volume.returncode or not match or float(match.group(1)) < -45:
                 return {"status": "BLOCKED", "reason": "AUDIO_SILENT_OR_TOO_QUIET",
                         "publishable": False}
