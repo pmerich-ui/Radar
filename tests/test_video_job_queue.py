@@ -38,6 +38,19 @@ class QueueTests(unittest.TestCase):
             self.assertEqual(q.get(job)["state"],"RENDERED")
             self.assertTrue(q.transition(job,"RENDERED","TECHNICAL_QA_PASSED",evidence_ref="test-technical-report"))
 
+    def test_blank_and_misplaced_evidence_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
+            with self.assertRaises(ValueError):
+                q.transition(job,"IDEA","SCRIPT_READY",evidence_ref="fabricated")
+            self.assertEqual(q.get(job)["state"],"IDEA")
+            for a,b in (("IDEA","SCRIPT_READY"),("SCRIPT_READY","GENERATOR_SELECTED"),("GENERATOR_SELECTED","RENDERING"),("RENDERING","RENDERED")):
+                self.assertTrue(q.transition(job,a,b))
+            for invalid in ("", "  ", None):
+                with self.assertRaises(ValueError):
+                    q.transition(job,"RENDERED","TECHNICAL_QA_PASSED",evidence_ref=invalid)
+            self.assertEqual(q.get(job)["state"],"RENDERED")
+
     def test_resume_without_double_render(self):
         with tempfile.TemporaryDirectory() as d:
             q=Queue(Path(d)/"queue.sqlite"); job=q.create({})
