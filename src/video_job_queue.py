@@ -19,7 +19,7 @@ class Queue:
         return dict(zip(("id","state","revision","retries","resume_state","approval_id","platform_post_id"),row)) if row else None
     def transition(self,job_id,expected,target,approval_id=None,platform_post_id=None):
         if expected not in STATES or target not in STATES: raise ValueError("Unknown state")
-        if expected in ("BLOCKED","PUBLISHED_VERIFIED"): raise ValueError("Terminal state")
+        if expected in ("BLOCKED","PUBLISHED_VERIFIED","FAILED_RETRYABLE"): raise ValueError("Terminal or paused state")
         if NEXT.get(expected)!=target and target not in ("FAILED_RETRYABLE","BLOCKED"): raise ValueError("Forbidden transition")
         if target=="USER_APPROVED" and not approval_id: raise ValueError("Specific approval required")
         if target=="PUBLISHED_VERIFIED" and not platform_post_id: raise ValueError("Verified post ID required")
@@ -40,7 +40,7 @@ class Queue:
         self.db.execute("BEGIN IMMEDIATE")
         try:
             row=self.db.execute("SELECT state,resume_state,revision FROM jobs WHERE id=?",(job_id,)).fetchone()
-            if not row or row[0]!="FAILED_RETRYABLE" or row[1] in ("RENDERING","UPLOAD_STARTED","UPLOADED","PUBLISHED_VERIFIED"):
+            if not row or row[0]!="FAILED_RETRYABLE" or row[1] is None or row[1] in ("RENDERING","UPLOAD_STARTED","UPLOADED","PUBLISHED_VERIFIED"):
                 self.db.execute("ROLLBACK"); return False
             state,prior,rev=row
             self.db.execute("UPDATE jobs SET state=?,resume_state=NULL,revision=?,updated_at=? WHERE id=?",(prior,rev+1,int(time.time()),job_id))
