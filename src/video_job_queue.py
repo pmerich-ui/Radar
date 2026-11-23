@@ -2,7 +2,7 @@
 import json, sqlite3, time, uuid
 from pathlib import Path
 STATES = ("IDEA","SCRIPT_READY","GENERATOR_SELECTED","RENDERING","RENDERED","TECHNICAL_QA_PASSED","CREATIVE_QA_PASSED","RIGHTS_VERIFIED","AWAITING_USER_APPROVAL","USER_APPROVED","UPLOAD_STARTED","UPLOADED","PUBLISHED_VERIFIED","FAILED_RETRYABLE","BLOCKED")
-NEXT = dict(zip(STATES[:12], STATES[1:13]))
+NEXT = dict(zip(STATES[:13], STATES[1:14]))
 class Queue:
     def __init__(self, path):
         p=Path(path); p.parent.mkdir(parents=True,exist_ok=True)
