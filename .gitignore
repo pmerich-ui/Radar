@@ -8,3 +8,6 @@ output/
 # Never commit Awin exports or credential-bearing feed URLs
 data/awin/incoming/
 *.csv.gz
+
+# Private encrypted cache and temporary files
+data/awin_cache/
