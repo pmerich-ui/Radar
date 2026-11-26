@@ -28,10 +28,10 @@ jobs:
       - name: Regression checks
         run: python -m unittest discover -s tests -p test_media_recovery_v8.py -v
       - name: Recover real videos (no publication)
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: python -m src.media_recovery_v8
       - name: Store QA report without private media
-        if: always() && github.event_name != 'pull_request'
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: actions/upload-artifact@v4
         with:
           name: recovery-report-${{ github.run_id }}
@@ -39,7 +39,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
       - name: Preserve review media only in private repository
-        if: github.event_name != 'pull_request' && github.event.repository.private
+        if: github.event.repository.private && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: actions/upload-artifact@v4
         with:
           name: recovery-media-${{ github.run_id }}
