@@ -697,3 +697,6 @@ Aktuell verifiziert: PR #36 in main, Merge 7c77d29c34bc028d5eed249bdd5368ae5e02d
 
 ### 2026-11-26 – Agent 1 production handoff
 vidIQ Heidi original 15s vertical H3 768p job `job_dfb1cd29-8eab-47cf-a8e0-099ece775cb6` accepted, 120 existing credits consumed from 140; no new purchase. Poll existing ID, do not resubmit. Requires 1080x1920 conversion, actual technical/creative QA and commercial rights evidence before publication. Metricool Heidi draft 443234750 remains draft, not published; Luca 431565754 also draft. No new sales verified.
+
+### 2026-11-26 20:39 – Agent 1 handoff to control
+Existing Heidi vidIQ job completed per prior run. PR #37 https://github.com/pmerich-ui/Radar/pull/37 adds original source to existing recovery manifest and 1080x1920 normalization preserving original audio and duration; head 4c5ad677e72edea3327d605137f25d82d5c26384. CI not yet visible on first check. Next: control agent checks CI logs and artifacts, verifies normalization, merges only after successful tests; Agent 1 verifies commercial rights and creative QA before updating existing Metricool draft. Both old drafts still pending, autoPublish false, verified by Metricool. No duplicate render or upload. No new purchase. No new product-image rights or affiliate evidence verified this run.
