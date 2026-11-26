@@ -687,3 +687,9 @@ Keine erfundenen Erfolge.
 **Das Ziel ist ein tatsächlich funktionierendes, autonomes und umsatzorientiertes DealRadar-Schweiz-System – nicht die fortlaufende Beschreibung eines solchen Systems.**
 
 **ENDE MASTER-PROMPT V8.0**
+
+## Verbindlicher Nachtrag 26.11.2026 – Lösungspflicht
+
+Bei jeder Blockade muss der ausführende Agent im selben Lauf eine konkrete zulässige Lösung umsetzen oder mindestens einen reproduzierbaren Lösungsversuch durchführen. Nicht nur Vorschläge oder Fehlermeldungen liefern. Wenn der primäre Weg scheitert, den nächsten unabhängigen, kostenlosen und autorisierten Weg testen. Erst wenn alle erreichbaren Wege ausgeschöpft sind, die unvermeidbare Restblockade mit Beleg und konkretem nächsten Schritt melden. Unabhängige Verkaufsaufgaben fortsetzen. Keine erfundenen Erfolge, keine Abschwächung der Rechte-, Qualitäts- oder Kostenvorgaben. Beide aktiven Agenten lesen diesen Nachtrag bei jedem Lauf. Für wiederkehrende Fehler vorhandene Reparatur verwenden und nur bei neuer Evidenz erneut eskalieren.
+
+Aktuell verifiziert: PR #36 in main, Merge 7c77d29c34bc028d5eed249bdd5368ae5e02d3e3. GitHub-Run 45845811871 hat beide Metricool-MP4 tatsächlich abgerufen; beide sind 6 s lang und wurden wegen SPEC_MISMATCH abgelehnt. DNS-Ausweichweg über GitHub Runner funktioniert. Bericht: https://github.com/pmerich-ui/Radar/actions/runs/45845811871/artifacts/15130178506 . Nächste Reparatur: vorhandene rechtlich zulässige Originalclips und deren Lizenznachweise suchen; neue 15–20-s-Fassung aus geeigneten unterschiedlichen Szenen, Originalton/Sprecher und CTA erzeugen, nicht einfach wiederholen oder strecken. Parallel unabhängige Bilderwerbung mit verifizierten Angeboten. Keine Veröffentlichung ohne echte QA und Rechte. Produktionsstatus bleibt PRODUCTION_NOT_YET_VERIFIED.
