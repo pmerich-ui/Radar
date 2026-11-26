@@ -21,12 +21,13 @@ jobs:
         id: gate
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
           python - <<'PY'
           import datetime, os
           from zoneinfo import ZoneInfo
           now = datetime.datetime.now(ZoneInfo('Europe/Zurich'))
-          enabled = os.environ['EVENT_NAME'] == 'workflow_dispatch' or (now.hour in (8,13,19) and now.minute < 45)
+          enabled = os.environ['EVENT_NAME'] == 'workflow_dispatch' or (os.environ.get('SCHEDULE') in ('0 7,8,12,13,18,19 * * *',))
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write('enabled=' + str(enabled).lower() + '\n')
           print(now.isoformat(), enabled)
@@ -68,10 +69,10 @@ jobs:
           print(decision)
           assert not decision['allowed'], 'Unsafe publication gate'
           PY
-      - name: Render one video
+      - name: Render up to five offline drafts
         if: steps.gate.outputs.enabled == 'true'
         env:
-          BATCH_SIZE: '1'
+          BATCH_SIZE: '5'
         run: python -m src.batch
       - name: Audit premium readiness (report only; never auto-publish)
         if: steps.gate.outputs.enabled == 'true'
