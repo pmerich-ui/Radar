@@ -9,6 +9,6 @@ class TestFactory(unittest.TestCase):
             p=Path(d)/"sample.mp4"
             info=render(CATALOG[0],p)
             self.assertEqual(info["fps"],30)
-            self.assertEqual((info["width"],info["height"]),(720,1280))
+            self.assertEqual((info["width"],info["height"]),(1080,1920))
             self.assertTrue(p.exists())
 if __name__=="__main__":unittest.main()
