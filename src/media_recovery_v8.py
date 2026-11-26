@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
 MAX_BYTES=150*1024*1024
-HOSTS={"static.metricool.com"}
+HOSTS={"static.metricool.com","videogen.vidiq.com"}
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):
         return None
@@ -99,6 +99,15 @@ def main():
         path=root/(uid+".mp4")
         result=recover(job,path)
         if result["status"]=="RENDERED":
+            if job.get("normalize"):
+                normalized=path.with_name(uid+"-normalized.mp4")
+                try:
+                    run(["ffmpeg","-nostdin","-y","-v","error","-i",str(path),"-map","0:v:0","-map","0:a:0","-vf","scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,setsar=1","-c:v","libx264","-pix_fmt","yuv420p","-c:a","aac","-movflags","+faststart",str(normalized)],timeout=180)
+                    result["original_sha256"]=result["sha256"]
+                    normalized.replace(path)
+                    result["sha256"]=digest(path)
+                except (OSError,subprocess.SubprocessError):
+                    result["normalization"]="FAILED"
             result["qa"]=inspect(path)
             # Review frames are evidence, not automatic creative approval.
             if result["qa"]["status"]=="TECHNICAL_QA_PASSED":
